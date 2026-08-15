@@ -1,74 +1,74 @@
 ---
 name: codebase-design
-description: Shared vocabulary for designing deep modules. Use when the user wants to design or improve a module's interface, find deepening opportunities, decide where a seam goes, make code more testable or AI-navigable, or when another skill needs the deep-module vocabulary.
+description: Vocabulário compartilhado para projetar deep modules. Use quando o usuário quiser projetar ou melhorar a interface de um módulo, encontrar oportunidades de aprofundamento, decidir onde uma costura deve ficar, tornar o código mais testável ou navegável por IA, ou quando outra skill precisar do vocabulário de deep modules.
 ---
 
 # Codebase Design
 
-Design **deep modules**: a lot of behaviour behind a small interface, placed at a clean seam, testable through that interface. Use this language and these principles wherever code is being designed or restructured. The aim is leverage for callers, locality for maintainers, and testability for everyone.
+Projete **deep modules**: muito comportamento atrás de uma interface pequena, posicionada em uma costura limpa, testável por meio dessa interface. Use esta linguagem e estes princípios onde quer que o código esteja sendo projetado ou reestruturado. O objetivo é alavancagem para os chamadores, localidade para os mantenedores e testabilidade para todos.
 
-## Glossary
+## Glossário
 
-Use these terms exactly — don't substitute "component," "service," "API," or "boundary." Consistent language is the whole point.
+Use estes termos com exatidão — não substitua por "componente", "serviço", "API" ou "divisa". Linguagem consistente é todo o propósito.
 
-**Module** — anything with an interface and an implementation. Deliberately scale-agnostic: a function, class, package, or tier-spanning slice. _Avoid_: unit, component, service.
+**Módulo (Module)** — qualquer coisa com uma interface e uma implementação. Deliberadamente agnóstico de escala: uma função, classe, pacote ou fatia transversal a camadas. _Evitar_: unidade, componente, serviço.
 
-**Interface** — everything a caller must know to use the module correctly: the type signature, but also invariants, ordering constraints, error modes, required configuration, and performance characteristics. _Avoid_: API, signature (too narrow — they refer only to the type-level surface).
+**Interface** — tudo o que um chamador precisa saber para usar o módulo corretamente: a assinatura de tipos, mas também invariantes, restrições de ordenação, modos de erro, configuração necessária e características de desempenho. _Evitar_: API, assinatura (muito estreitas — referem-se apenas à superfície no nível de tipos).
 
-**Implementation** — what's inside a module, its body of code. Distinct from **Adapter**: a thing can be a small adapter with a large implementation (a Postgres repo) or a large adapter with a small implementation (an in-memory fake). Reach for "adapter" when the seam is the topic; "implementation" otherwise.
+**Implementação (Implementation)** — o que está dentro de um módulo, seu corpo de código. Distinto de **Adaptador**: algo pode ser um adaptador pequeno com uma implementação grande (um repositório Postgres) ou um adaptador grande com uma implementação pequena (um fake em memória). Use "adaptador" quando a costura for o assunto; "implementação" caso contrário.
 
-**Depth** — leverage at the interface: the amount of behaviour a caller (or test) can exercise per unit of interface they have to learn. A module is **deep** when a large amount of behaviour sits behind a small interface, **shallow** when the interface is nearly as complex as the implementation.
+**Profundidade (Depth)** — alavancagem na interface: a quantidade de comportamento que um chamador (ou teste) pode exercitar por unidade de interface que precisa aprender. Um módulo é **deep** quando uma grande quantidade de comportamento reside atrás de uma interface pequena, **raso (shallow)** quando a interface é quase tão complexa quanto a implementação.
 
-**Seam** _(Michael Feathers)_ — a place where you can alter behaviour without editing in that place; the *location* at which a module's interface lives. Where to put the seam is its own design decision, distinct from what goes behind it. _Avoid_: boundary (overloaded with DDD's bounded context).
+**Costura (Seam)** _(Michael Feathers)_ — um lugar onde você pode alterar o comportamento sem editar nesse lugar; o *local* no qual a interface de um módulo reside. Onde colocar a costura é uma decisão de design própria, distinta do que fica atrás dela. _Evitar_: divisa (sobrecarregado com bounded context do DDD).
 
-**Adapter** — a concrete thing that satisfies an interface at a seam. Describes *role* (what slot it fills), not substance (what's inside).
+**Adaptador (Adapter)** — uma coisa concreta que satisfaz uma interface em uma costura. Descreve o *papel* (qual slot preenche), não a substância (o que está dentro).
 
-**Leverage** — what callers get from depth: more capability per unit of interface they learn. One implementation pays back across N call sites and M tests.
+**Alavancagem (Leverage)** — o que os chamadores obtêm da profundidade: mais capacidade por unidade de interface que aprendem. Uma implementação se paga ao longo de N pontos de chamada e M testes.
 
-**Locality** — what maintainers get from depth: change, bugs, knowledge, and verification concentrate in one place rather than spreading across callers. Fix once, fixed everywhere.
+**Localidade (Locality)** — o que os mantenedores obtêm da profundidade: alterações, bugs, conhecimento e verificação se concentram em um único lugar em vez de se espalharem pelos chamadores. Corrija uma vez, corrigido em todo lugar.
 
 ## Deep vs shallow
 
-**Deep module** = small interface + lots of implementation:
+**Deep module** = interface pequena + muita implementação:
 
 ```
 ┌─────────────────────┐
-│   Small Interface   │  ← Few methods, simple params
+│   Small Interface   │  ← Poucos métodos, parâmetros simples
 ├─────────────────────┤
 │                     │
-│  Deep Implementation│  ← Complex logic hidden
+│  Deep Implementation│  ← Lógica complexa oculta
 │                     │
 └─────────────────────┘
 ```
 
-**Shallow module** = large interface + little implementation (avoid):
+**Módulo raso (shallow)** = interface grande + pouca implementação (evite):
 
 ```
 ┌─────────────────────────────────┐
-│       Large Interface           │  ← Many methods, complex params
+│       Large Interface           │  ← Muitos métodos, parâmetros complexos
 ├─────────────────────────────────┤
-│  Thin Implementation            │  ← Just passes through
+│  Thin Implementation            │  ← Apenas repassa chamadas
 └─────────────────────────────────┘
 ```
 
-When designing an interface, ask:
+Ao projetar uma interface, pergunte-se:
 
-- Can I reduce the number of methods?
-- Can I simplify the parameters?
-- Can I hide more complexity inside?
+- Posso reduzir o número de métodos?
+- Posso simplificar os parâmetros?
+- Posso ocultar mais complexidade no interior?
 
-## Principles
+## Princípios
 
-- **Depth is a property of the interface, not the implementation.** A deep module can be internally composed of small, mockable, swappable parts — they just aren't part of the interface. A module can have **internal seams** (private to its implementation, used by its own tests) as well as the **external seam** at its interface.
-- **The deletion test.** Imagine deleting the module. If complexity vanishes, it was a pass-through. If complexity reappears across N callers, it was earning its keep.
-- **The interface is the test surface.** Callers and tests cross the same seam. If you want to test *past* the interface, the module is probably the wrong shape.
-- **One adapter means a hypothetical seam. Two adapters means a real one.** Don't introduce a seam unless something actually varies across it.
+- **A profundidade é uma propriedade da interface, não da implementação.** Um deep module pode ser composto internamente de partes pequenas, mockáveis e substituíveis — elas apenas não fazem parte da interface. Um módulo pode ter **costuras internas** (privadas à sua implementação, usadas por seus próprios testes), bem como a **costura externa** em sua interface.
+- **O teste de deleção.** Imagine deletar o módulo. Se a complexidade desaparecer, ele era apenas um repassador. Se a complexidade reaparecer espalhada por N chamadores, ele estava justificando sua existência.
+- **A interface é a superfície de teste.** Chamadores e testes cruzam a mesma costura. Se você quiser testar *além* da interface, o módulo provavelmente está com o formato errado.
+- **Um adaptador significa uma costura hipotética. Dois adaptadores significam uma costura real.** Não introduza uma costura a menos que algo realmente varie através dela.
 
-## Designing for testability
+## Projetando para testabilidade
 
-Good interfaces make testing natural:
+Boas interfaces tornam os testes naturais:
 
-1. **Accept dependencies, don't create them.**
+1. **Aceite dependências, não as crie.**
 
    ```typescript
    // Testable
@@ -80,7 +80,7 @@ Good interfaces make testing natural:
    }
    ```
 
-2. **Return results, don't produce side effects.**
+2. **Retorne resultados, não produza efeitos colaterais.**
 
    ```typescript
    // Testable
@@ -92,23 +92,23 @@ Good interfaces make testing natural:
    }
    ```
 
-3. **Small surface area.** Fewer methods = fewer tests needed. Fewer params = simpler test setup.
+3. **Superfície pequena.** Menos métodos = menos testes necessários. Menos parâmetros = configuração de teste mais simples.
 
-## Relationships
+## Relações
 
-- A **Module** has exactly one **Interface** (the surface it presents to callers and tests).
-- **Depth** is a property of a **Module**, measured against its **Interface**.
-- A **Seam** is where a **Module**'s **Interface** lives.
-- An **Adapter** sits at a **Seam** and satisfies the **Interface**.
-- **Depth** produces **Leverage** for callers and **Locality** for maintainers.
+- Um **Módulo** tem exatamente uma **Interface** (a superfície que ele apresenta a chamadores e testes).
+- **Profundidade** é uma propriedade de um **Módulo**, medida em relação à sua **Interface**.
+- Uma **Costura** é onde a **Interface** de um **Módulo** reside.
+- Um **Adaptador** fica em uma **Costura** e satisfaz a **Interface**.
+- **Profundidade** produz **Alavancagem** para chamadores e **Localidade** para mantenedores.
 
-## Rejected framings
+## Enquadramentos rejeitados
 
-- **Depth as ratio of implementation-lines to interface-lines** (Ousterhout): rewards padding the implementation. We use depth-as-leverage instead.
-- **"Interface" as the TypeScript `interface` keyword or a class's public methods**: too narrow — interface here includes every fact a caller must know.
-- **"Boundary"**: overloaded with DDD's bounded context. Say **seam** or **interface**.
+- **Profundidade como proporção entre linhas de implementação e linhas de interface** (Ousterhout): recompensa inflar a implementação. Em vez disso, usamos profundidade-como-alavancagem.
+- **"Interface" como a palavra-chave `interface` do TypeScript ou os métodos públicos de uma classe**: muito estreito — interface aqui inclui todo fato que um chamador precisa saber.
+- **"Boundary"**: sobrecarregado com bounded context do DDD. Diga **costura** ou **interface**.
 
-## Going deeper
+## Indo mais a fundo
 
-- **Deepening a cluster given its dependencies** — see [DEEPENING.md](DEEPENING.md): dependency categories, seam discipline, and replace-don't-layer testing.
-- **Exploring alternative interfaces** — see [DESIGN-IT-TWICE.md](DESIGN-IT-TWICE.md): spin up parallel sub-agents to design the interface several radically different ways, then compare on depth, locality, and seam placement.
+- **Aprofundando um cluster dadas as suas dependências** — veja [DEEPENING.md](DEEPENING.md): categorias de dependência, disciplina de costuras e testes no estilo substituir-não-acumular em camadas (replace-don't-layer).
+- **Explorando interfaces alternativas** — veja [DESIGN-IT-TWICE.md](DESIGN-IT-TWICE.md): inicialize subagentes paralelos para projetar a interface de várias maneiras radicalmente diferentes e, em seguida, compare quanto a profundidade, localidade e posicionamento da costura.

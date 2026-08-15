@@ -1,53 +1,53 @@
 ---
 name: to-questionnaire
-description: Turn a decision you can't fully answer into a questionnaire for someone else to fill in.
+description: Transforme uma decisão que você não consegue responder totalmente em um questionário para outra pessoa preencher.
 disable-model-invocation: true
 ---
 
-Turn something the user can't answer alone into a **questionnaire** — a Markdown document they hand to one person to fill in async, or fill out together over a meeting. The recipient holds knowledge the user lacks; the questionnaire pulls it out of them.
+Transforme algo que o usuário não consegue responder sozinho em um **questionário** — um documento Markdown que ele entrega a uma pessoa para preencher de forma assíncrona ou preencherem juntos em uma reunião. O destinatário detém o conhecimento que falta ao usuário; o questionário extrai isso dele.
 
-**Grill the send, not the subject.** Interview the user only about the _send_, which they can always answer: who it goes to, and what they need back. The questions in the document then target the **gap** between what the recipient knows and what the user needs.
+**Sabatine o envio, não o assunto.** Entreviste o usuário apenas sobre o _envio_, o que ele sempre é capaz de responder: para quem vai e do que ele precisa de volta. As perguntas no documento visam então à **lacuna** entre o que o destinatário sabe e o que o usuário precisa.
 
-1. **Who is it going to?** Ask, in one exchange, the recipient's role, expertise, and relationship to the user. This fixes the questionnaire's tone and how much context it must carry. Done when you know who the recipient is and what they know that the user doesn't.
+1. **Para quem vai?** Pergunte, em uma única interação, a função, a especialidade e a relação do destinatário com o usuário. Isso define o tom do questionário e quanto contexto ele deve carregar. Concluído quando você souber quem é o destinatário e o que ele sabe que o usuário não sabe.
 
-2. **What do you need back?** Ask, in one exchange, the specific decisions or facts the user can't resolve alone and needs from this person. Done when you have a concrete list of what the user must walk away able to do or decide.
+2. **Do que você precisa de volta?** Pergunte, em uma única interação, as decisões ou fatos específicos que o usuário não consegue resolver sozinho e dos quais precisa dessa pessoa. Concluído quando você tiver uma lista concreta do que o usuário precisa sair dali capaz de fazer ou decidir.
 
-3. **Write the questionnaire.** Draft questions aimed at the gap from steps 1–2, following the Document structure below. Write it to `to-questionnaire-<slug>.md` in the current directory (slug from the topic) and report the path. Done when the file exists and every item the user named in step 2 is covered by a question.
+3. **Escreva o questionário.** Redija perguntas direcionadas à lacuna das etapas 1–2, seguindo a Estrutura do documento abaixo. Escreva o arquivo em `to-questionnaire-<slug>.md` no diretório atual (slug extraído do tópico) e informe o caminho. Concluído quando o arquivo existir e cada item mencionado pelo usuário na etapa 2 estiver coberto por uma pergunta.
 
-## Document structure
+## Estrutura do documento
 
-Frame the document as a **discovery questionnaire**: the user lacks context, the recipient holds it. Order questions most-important-first — async means you may only get one pass — and group them under `##` headings by theme once there are more than a handful. Write it using the template below.
+Estruture o documento como um **questionário de descoberta**: falta contexto ao usuário, o destinatário o detém. Ordene as perguntas das mais importantes para as menos importantes — o formato assíncrono significa que você pode ter apenas uma chance — e agrupe-as sob títulos `##` por tema quando houver mais do que algumas poucas. Escreva-o usando o template abaixo.
 
 <questionnaire-template>
 
-# <Questionnaire title>
+# <Título do questionário>
 
-**Purpose:** why this questionnaire exists and the decision riding on it.
+**Objetivo:** por que este questionário existe e a decisão que depende dele.
 
-**From:** <the user> — **To:** <the recipient> — **How your answers will be used:** <where they go>
+**De:** <o usuário> — **Para:** <o destinatário> — **Como suas respostas serão usadas:** <para onde elas vão>
 
-## Context
+## Contexto
 
-One paragraph orienting a recipient who wasn't in the user's head. Enough to answer well, not a page.
+Um parágrafo orientando um destinatário que não estava na cabeça do usuário. O suficiente para responder bem, não uma página inteira.
 
-## How to answer
+## Como responder
 
-Deadline and rough effort. Partial answers and "I don't know" are useful — flag anything you're unsure of rather than skipping it.
+Prazo e esforço estimado. Respostas parciais e "Não sei" são úteis — sinalize qualquer coisa sobre a qual você não tenha certeza em vez de pular a pergunta.
 
-## <Theme heading>
+## <Título do tema>
 
-One `##` section per theme. Under each, its questions, most-important-first. Every question is one idea — never compound — with an answer stub directly beneath, and a one-line _why this matters_ only where the question could be misread or invite a throwaway answer.
+Uma seção `##` por tema. Sob cada uma, suas perguntas, das mais importantes para as menos importantes. Cada pergunta é uma única ideia — nunca composta — com um espaço para resposta logo abaixo e uma única linha de _por que isso importa_ apenas onde a pergunta puder ser mal interpretada ou incitar uma resposta superficial.
 
 <question-example>
-### What load is the system expected to handle at launch?
+### Que carga o sistema deve suportar no lançamento?
 
-_Why this matters: it decides whether we provision for burst traffic now or defer it._
+_Por que isso importa: isso define se provisionamos para picos de tráfego agora ou adiamos isso._
 
 >
 </question-example>
 
-## Anything else?
+## Algo mais?
 
-A closing catch-all: anything we didn't ask that we should know?
+Um fechamento abrangente: há algo que não perguntamos e que deveríamos saber?
 
 </questionnaire-template>

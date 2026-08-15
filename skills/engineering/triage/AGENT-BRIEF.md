@@ -1,207 +1,207 @@
-# Writing Agent Briefs
+# Escrevendo Briefs de Agente
 
-An agent brief is a structured comment posted on a GitHub issue or PR when it moves to `ready-for-agent`. It is the authoritative specification that an AFK agent will work from. The original body and discussion are context — the agent brief is the contract.
+Um brief de agente é um comentário estruturado publicado em uma issue ou PR do GitHub quando este se move para `ready-for-agent`. É a especificação autoritativa a partir da qual um agente AFK trabalhará. O corpo original e a discussão são contexto — o brief de agente é o contrato.
 
-The brief states **what the agent should do**, which stretches to both surfaces: for an issue, that's building the change from nothing; for a PR, it's what's left to do *to the existing diff* — finish it, close gaps, address review points. Same principles either way; the PR example below shows the difference.
+O brief estabelece **o que o agente deve fazer**, o que se estende a ambas as superfícies: para uma issue, é construir a alteração do zero; para um PR, é o que resta fazer *no diff existente* — finalizá-lo, fechar lacunas, endereçar pontos de revisão. Os mesmos princípios em ambos os casos; o exemplo de PR abaixo mostra a diferença.
 
-## Principles
+## Princípios
 
-### Durability over precision
+### Durabilidade em vez de precisão
 
-The issue may sit in `ready-for-agent` for days or weeks. The codebase will change in the meantime. Write the brief so it stays useful even as files are renamed, moved, or refactored.
+A issue pode ficar em `ready-for-agent` por dias ou semanas. A base de código mudará nesse meio tempo. Escreva o brief de modo que ele continue útil mesmo que arquivos sejam renomeados, movidos ou refatorados.
 
-- **Do** describe interfaces, types, and behavioral contracts
-- **Do** name specific types, function signatures, or config shapes that the agent should look for or modify
-- **Don't** reference file paths — they go stale
-- **Don't** reference line numbers
-- **Don't** assume the current implementation structure will remain the same
+- **Faça**: descreva interfaces, tipos e contratos de comportamento
+- **Faça**: nomeie tipos específicos, assinaturas de funções ou formatos de configuração que o agente deva procurar ou modificar
+- **Não faça**: referencie caminhos de arquivos — eles ficam desatualizados
+- **Não faça**: referencie números de linha
+- **Não faça**: presuma que a estrutura atual de implementação permanecerá a mesma
 
-### Behavioral, not procedural
+### Comportamental, não procedimental
 
-Describe **what** the system should do, not **how** to implement it. The agent will explore the codebase fresh and make its own implementation decisions.
+Descreva **o que** o sistema deve fazer, não **como** implementá-lo. O agente explorará a base de código do zero e tomará suas próprias decisões de implementação.
 
-- **Good:** "The `SkillConfig` type should accept an optional `schedule` field of type `CronExpression`"
-- **Bad:** "Open src/types/skill.ts and add a schedule field on line 42"
-- **Good:** "When a user runs `/triage` with no arguments, they should see a summary of issues needing attention"
-- **Bad:** "Add a switch statement in the main handler function"
+- **Bom:** "O tipo `SkillConfig` deve aceitar um campo opcional `schedule` do tipo `CronExpression`"
+- **Ruim:** "Abra src/types/skill.ts e adicione um campo schedule na linha 42"
+- **Bom:** "Quando um usuário executa `/triage` sem argumentos, ele deve ver um resumo das issues que precisam de atenção"
+- **Ruim:** "Adicione uma instrução switch na função principal de manipulação"
 
-### Complete acceptance criteria
+### Critérios de aceitação completos
 
-The agent needs to know when it's done. Every agent brief must have concrete, testable acceptance criteria. Each criterion should be independently verifiable.
+O agente precisa saber quando terminou. Todo brief de agente deve ter critérios de aceitação concretos e testáveis. Cada critério deve ser verificável de forma independente.
 
-- **Good:** "Running `gh issue list --label needs-triage` returns issues that have been through initial classification"
-- **Bad:** "Triage should work correctly"
+- **Bom:** "Executar `gh issue list --label needs-triage` retorna issues que passaram pela classificação inicial"
+- **Ruim:** "A triagem deve funcionar corretamente"
 
-### Explicit scope boundaries
+### Limites explícitos de escopo
 
-State what is out of scope. This prevents the agent from gold-plating or making assumptions about adjacent features.
+Declare o que está fora de escopo. Isso impede que o agente adicione recursos desnecessários (gold-plating) ou faça suposições sobre funcionalidades adjacentes.
 
 ## Template
 
 ```markdown
-## Agent Brief
+## Brief de Agente
 
-**Category:** bug / enhancement
-**Summary:** one-line description of what needs to happen
+**Categoria:** bug / enhancement
+**Resumo:** descrição de uma linha do que precisa acontecer
 
-**Current behavior:**
-Describe what happens now. For bugs, this is the broken behavior.
-For enhancements, this is the status quo the feature builds on.
+**Comportamento atual:**
+Descreva o que acontece agora. Para bugs, este é o comportamento quebrado.
+Para melhorias, este é o status quo sobre o qual a funcionalidade é construída.
 
-**Desired behavior:**
-Describe what should happen after the agent's work is complete.
-Be specific about edge cases and error conditions.
+**Comportamento desejado:**
+Descreva o que deve acontecer quando o trabalho do agente estiver concluído.
+Seja específico sobre casos de borda e condições de erro.
 
-**Key interfaces:**
-- `TypeName` — what needs to change and why
-- `functionName()` return type — what it currently returns vs what it should return
-- Config shape — any new configuration options needed
+**Interfaces principais:**
+- `TypeName` — o que precisa mudar e por quê
+- Tipo de retorno de `functionName()` — o que ele retorna atualmente vs o que deveria retornar
+- Formato de configuração — quaisquer novas opções de configuração necessárias
 
-**Acceptance criteria:**
-- [ ] Specific, testable criterion 1
-- [ ] Specific, testable criterion 2
-- [ ] Specific, testable criterion 3
+**Critérios de aceitação:**
+- [ ] Critério 1, específico e testável
+- [ ] Critério 2, específico e testável
+- [ ] Critério 3, específico e testável
 
-**Out of scope:**
-- Thing that should NOT be changed or addressed in this issue
-- Adjacent feature that might seem related but is separate
+**Fora de escopo:**
+- Algo que NÃO deve ser alterado ou endereçado nesta issue
+- Funcionalidade adjacente que pode parecer relacionada, mas é separada
 ```
 
-## Examples
+## Exemplos
 
-### Good agent brief (bug)
+### Bom brief de agente (bug)
 
 ```markdown
-## Agent Brief
+## Brief de Agente
 
-**Category:** bug
-**Summary:** Skill description truncation drops mid-word, producing broken output
+**Categoria:** bug
+**Resumo:** truncamento da descrição da skill corta no meio de uma palavra, produzindo saída quebrada
 
-**Current behavior:**
-When a skill description exceeds 1024 characters, it is truncated at exactly
-1024 characters regardless of word boundaries. This produces descriptions
-that end mid-word (e.g. "Use when the user wants to confi").
+**Comportamento atual:**
+Quando a descrição de uma skill excede 1024 caracteres, ela é truncada em
+exatamente 1024 caracteres, sem respeitar os limites de palavra. Isso produz
+descrições que terminam no meio de uma palavra (ex.: "Use when the user wants to confi").
 
-**Desired behavior:**
-Truncation should break at the last word boundary before 1024 characters
-and append "..." to indicate truncation.
+**Comportamento desejado:**
+O truncamento deve quebrar no último limite de palavra antes de 1024
+caracteres e acrescentar "..." para indicar o truncamento.
 
-**Key interfaces:**
-- The `SkillMetadata` type's `description` field — no type change needed,
-  but the validation/processing logic that populates it needs to respect
-  word boundaries
-- Any function that reads SKILL.md frontmatter and extracts the description
+**Interfaces principais:**
+- O campo `description` do tipo `SkillMetadata` — não é necessária mudança
+  de tipo, mas a lógica de validação/processamento que o popula precisa
+  respeitar os limites de palavra
+- Qualquer função que leia o frontmatter do SKILL.md e extraia a descrição
 
-**Acceptance criteria:**
-- [ ] Descriptions under 1024 chars are unchanged
-- [ ] Descriptions over 1024 chars are truncated at the last word boundary
-      before 1024 chars
-- [ ] Truncated descriptions end with "..."
-- [ ] The total length including "..." does not exceed 1024 chars
+**Critérios de aceitação:**
+- [ ] Descrições com menos de 1024 caracteres permanecem inalteradas
+- [ ] Descrições com mais de 1024 caracteres são truncadas no último limite
+      de palavra antes de 1024 caracteres
+- [ ] Descrições truncadas terminam com "..."
+- [ ] O comprimento total, incluindo "...", não excede 1024 caracteres
 
-**Out of scope:**
-- Changing the 1024 char limit itself
-- Multi-line description support
+**Fora de escopo:**
+- Alterar o próprio limite de 1024 caracteres
+- Suporte a descrição em múltiplas linhas
 ```
 
-### Good agent brief (enhancement)
+### Bom brief de agente (enhancement)
 
 ```markdown
-## Agent Brief
+## Brief de Agente
 
-**Category:** enhancement
-**Summary:** Add `.out-of-scope/` directory support for tracking rejected feature requests
+**Categoria:** enhancement
+**Resumo:** adicionar suporte ao diretório `.out-of-scope/` para rastrear solicitações de funcionalidades rejeitadas
 
-**Current behavior:**
-When a feature request is rejected, the issue is closed with a `wontfix` label
-and a comment. There is no persistent record of the decision or reasoning.
-Future similar requests require the maintainer to recall or search for the
-prior discussion.
+**Comportamento atual:**
+Quando uma solicitação de funcionalidade é rejeitada, a issue é fechada com a
+label `wontfix` e um comentário. Não há registro persistente da decisão ou do
+raciocínio. Solicitações futuras semelhantes exigem que o mantenedor recorde
+ou procure a discussão anterior.
 
-**Desired behavior:**
-Rejected feature requests should be documented in `.out-of-scope/<concept>.md`
-files that capture the decision, reasoning, and links to all issues that
-requested the feature. When triaging new issues, these files should be
-checked for matches.
+**Comportamento desejado:**
+Solicitações de funcionalidades rejeitadas devem ser documentadas em arquivos
+`.out-of-scope/<concept>.md` que registrem a decisão, o raciocínio e links
+para todas as issues que solicitaram a funcionalidade. Ao triar novas issues,
+esses arquivos devem ser verificados em busca de correspondências.
 
-**Key interfaces:**
-- Markdown file format in `.out-of-scope/` — each file should have a
-  `# Concept Name` heading, a `**Decision:**` line, a `**Reason:**` line,
-  and a `**Prior requests:**` list with issue links
-- The triage workflow should read all `.out-of-scope/*.md` files early
-  and match incoming issues against them by concept similarity
+**Interfaces principais:**
+- Formato de arquivo Markdown em `.out-of-scope/` — cada arquivo deve ter um
+  cabeçalho `# Nome do Conceito`, uma linha `**Decisão:**`, uma linha
+  `**Motivo:**` e uma lista `**Solicitações anteriores:**` com links de issues
+- O fluxo de triagem deve ler todos os arquivos `.out-of-scope/*.md` logo no
+  início e comparar as issues recebidas com eles por similaridade de conceito
 
-**Acceptance criteria:**
-- [ ] Closing a feature as wontfix creates/updates a file in `.out-of-scope/`
-- [ ] The file includes the decision, reasoning, and link to the closed issue
-- [ ] If a matching `.out-of-scope/` file already exists, the new issue is
-      appended to its "Prior requests" list rather than creating a duplicate
-- [ ] During triage, existing `.out-of-scope/` files are checked and surfaced
-      when a new issue matches a prior rejection
+**Critérios de aceitação:**
+- [ ] Fechar uma funcionalidade como wontfix cria/atualiza um arquivo em `.out-of-scope/`
+- [ ] O arquivo inclui a decisão, o raciocínio e o link para a issue fechada
+- [ ] Se já existir um arquivo `.out-of-scope/` correspondente, a nova issue é
+      anexada à sua lista de "Solicitações anteriores" em vez de criar um duplicado
+- [ ] Durante a triagem, os arquivos `.out-of-scope/` existentes são verificados
+      e apresentados quando uma nova issue corresponde a uma rejeição anterior
 
-**Out of scope:**
-- Automated matching (human confirms the match)
-- Reopening previously rejected features
-- Bug reports (only enhancement rejections go to `.out-of-scope/`)
+**Fora de escopo:**
+- Correspondência automatizada (o humano confirma a correspondência)
+- Reabrir funcionalidades previamente rejeitadas
+- Relatos de bug (apenas rejeições de enhancement vão para `.out-of-scope/`)
 ```
 
-### Good agent brief (PR)
+### Bom brief de agente (PR)
 
-For a PR, "Current behavior" describes the state of the diff, and the brief asks the agent to finish or fix it rather than build from scratch.
+Para um PR, "Comportamento atual" descreve o estado do diff, e o brief pede ao agente para finalizá-lo ou corrigi-lo em vez de construir do zero.
 
 ```markdown
-## Agent Brief
+## Brief de Agente
 
-**Category:** enhancement
-**Summary:** Finish the contributor's `--json` output flag for `triage list`
+**Categoria:** enhancement
+**Resumo:** finalizar a flag de saída `--json` do contribuidor para `triage list`
 
-**Current behavior:**
-The PR adds a `--json` flag that serializes the issue list to JSON. The happy
-path works and the diff matches the project's command structure. Two gaps
-remain: errors are still printed as human text (not JSON), and the new flag has
-no test coverage.
+**Comportamento atual:**
+O PR adiciona uma flag `--json` que serializa a lista de issues em JSON. O
+caminho feliz funciona e o diff corresponde à estrutura de comandos do
+projeto. Restam duas lacunas: os erros ainda são impressos como texto legível
+por humanos (não JSON), e a nova flag não tem cobertura de teste.
 
-**Desired behavior:**
-With `--json`, all output — including errors — is well-formed JSON on stdout,
-and the command's exit codes are unchanged. The existing human-readable output
-is untouched when the flag is absent.
+**Comportamento desejado:**
+Com `--json`, toda a saída — incluindo erros — é JSON bem formado no stdout,
+e os códigos de saída do comando permanecem inalterados. A saída legível por
+humanos existente permanece intocada quando a flag está ausente.
 
-**Key interfaces:**
-- The command's error path should emit `{ "error": string }` under `--json`
-  instead of the plain-text error
-- Reuse the existing serializer the PR already added; don't introduce a second
+**Interfaces principais:**
+- O caminho de erro do comando deve emitir `{ "error": string }` sob
+  `--json`, em vez do erro em texto plano
+- Reutilize o serializador existente que o PR já adicionou; não introduza um segundo
 
-**Acceptance criteria:**
-- [ ] `triage list --json` emits valid JSON for both success and error cases
-- [ ] Exit codes match the non-JSON command
-- [ ] A test covers the `--json` success output and one error case
-- [ ] Default (non-JSON) output is byte-for-byte unchanged
+**Critérios de aceitação:**
+- [ ] `triage list --json` emite JSON válido tanto para casos de sucesso quanto de erro
+- [ ] Os códigos de saída correspondem ao comando sem JSON
+- [ ] Um teste cobre a saída de sucesso do `--json` e um caso de erro
+- [ ] A saída padrão (sem JSON) permanece byte a byte inalterada
 
-**Out of scope:**
-- Adding `--json` to any other command
-- Changing the JSON shape of the success payload the PR already defined
+**Fora de escopo:**
+- Adicionar `--json` a qualquer outro comando
+- Alterar o formato JSON do payload de sucesso que o PR já definiu
 ```
 
-### Bad agent brief
+### Mau brief de agente
 
 ```markdown
-## Agent Brief
+## Brief de Agente
 
-**Summary:** Fix the triage bug
+**Resumo:** corrigir o bug da triagem
 
-**What to do:**
-The triage thing is broken. Look at the main file and fix it.
-The function around line 150 has the issue.
+**O que fazer:**
+A coisa da triagem está quebrada. Olhe o arquivo principal e conserte.
+A função por volta da linha 150 tem o problema.
 
-**Files to change:**
-- src/triage/handler.ts (line 150)
-- src/types.ts (line 42)
+**Arquivos a alterar:**
+- src/triage/handler.ts (linha 150)
+- src/types.ts (linha 42)
 ```
 
-This is bad because:
-- No category
-- Vague description ("the triage thing is broken")
-- References file paths and line numbers that will go stale
-- No acceptance criteria
-- No scope boundaries
-- No description of current vs desired behavior
+Isto é ruim porque:
+- Sem categoria
+- Descrição vaga ("a coisa da triagem está quebrada")
+- Referencia caminhos de arquivo e números de linha que ficarão desatualizados
+- Sem critérios de aceitação
+- Sem limites de escopo
+- Sem descrição do comportamento atual vs desejado

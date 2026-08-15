@@ -1,75 +1,75 @@
 ---
 name: to-spec
-description: Turn the current conversation into a spec and publish it to the project issue tracker — no interview, just synthesis of what you've already discussed.
+description: Transforme a conversa atual em uma spec e publique-a no issue tracker do projeto — sem entrevista, apenas a síntese do que já foi discutido.
 disable-model-invocation: true
 ---
 
-This skill takes the current conversation context and codebase understanding and produces a spec. Do NOT interview the user — just synthesize what you already know.
+Esta skill pega o contexto da conversa atual e o entendimento da base de código e produz uma spec. NÃO entreviste o usuário — apenas sintetize o que você já sabe.
 
-The issue tracker and triage label vocabulary should have been provided to you — run `/setup-matt-pocock-skills` if not.
+O vocabulário de issue tracker e de labels de triagem deve ter sido fornecido a você — execute `/setup-matt-pocock-skills` se não foi.
 
-## Process
+## Processo
 
-1. Explore the repo to understand the current state of the codebase, if you haven't already. Use the project's domain glossary vocabulary throughout the spec, and respect any ADRs in the area you're touching.
+1. Explore o repositório para entender o estado atual da base de código, se ainda não o fez. Use o vocabulário do glossário de domínio do projeto por toda a spec e respeite quaisquer ADRs na área em que você estiver mexendo.
 
-2. Sketch out the seams at which you're going to test the feature. Existing seams should be preferred to new ones. Use the highest seam possible. If new seams are needed, propose them at the highest point you can. The fewer seams across the codebase, the better - the ideal number is one.
+2. Esboce as costuras nas quais você vai testar a funcionalidade. Costuras existentes devem ser preferidas a novas. Use a costura mais alta possível. Se novas costuras forem necessárias, proponha-as no ponto mais alto que puder. Quanto menos costuras pela base de código, melhor - o número ideal é uma.
 
-Check with the user that these seams match their expectations.
+Verifique com o usuário se essas costuras atendem às expectativas dele.
 
-3. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
+3. Escreva a spec usando o template abaixo e, em seguida, publique-a no issue tracker do projeto. Aplique a label de triagem `ready-for-agent` - não é necessária triagem adicional.
 
 <spec-template>
 
-## Problem Statement
+## Declaração do Problema
 
-The problem that the user is facing, from the user's perspective.
+O problema que o usuário está enfrentando, sob a perspectiva do usuário.
 
-## Solution
+## Solução
 
-The solution to the problem, from the user's perspective.
+A solução para o problema, sob a perspectiva do usuário.
 
-## User Stories
+## Histórias de Usuário
 
-A LONG, numbered list of user stories. Each user story should be in the format of:
+Uma lista LONGA e numerada de histórias de usuário. Cada história de usuário deve estar no formato:
 
-1. As an <actor>, I want a <feature>, so that <benefit>
+1. Como um <ator>, eu quero <funcionalidade>, para que <benefício>
 
 <user-story-example>
-1. As a mobile bank customer, I want to see balance on my accounts, so that I can make better informed decisions about my spending
+1. Como cliente de banco móvel, eu quero ver o saldo das minhas contas, para que eu possa tomar decisões mais bem informadas sobre meus gastos
 </user-story-example>
 
-This list of user stories should be extremely extensive and cover all aspects of the feature.
+Esta lista de histórias de usuário deve ser extremamente abrangente e cobrir todos os aspectos da funcionalidade.
 
-## Implementation Decisions
+## Decisões de Implementação
 
-A list of implementation decisions that were made. This can include:
+Uma lista das decisões de implementação que foram tomadas. Isso pode incluir:
 
-- The modules that will be built/modified
-- The interfaces of those modules that will be modified
-- Technical clarifications from the developer
-- Architectural decisions
-- Schema changes
-- API contracts
-- Specific interactions
+- Os módulos que serão construídos/modificados
+- As interfaces desses módulos que serão modificadas
+- Esclarecimentos técnicos do desenvolvedor
+- Decisões arquiteturais
+- Alterações de schema
+- Contratos de API
+- Interações específicas
 
-Do NOT include specific file paths or code snippets. They may end up being outdated very quickly.
+NÃO inclua caminhos de arquivo específicos nem trechos de código. Eles podem ficar desatualizados muito rapidamente.
 
-Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it within the relevant decision and note briefly that it came from a prototype. Trim to the decision-rich parts — not a working demo, just the important bits.
+Exceção: se um protótipo produziu um trecho que codifica uma decisão com mais precisão do que a prosa é capaz (máquina de estados, reducer, schema, formato de tipo), inclua-o inline na decisão relevante e anote brevemente que ele veio de um protótipo. Reduza aos trechos ricos em decisões — não uma demo funcional, apenas as partes importantes.
 
-## Testing Decisions
+## Decisões de Teste
 
-A list of testing decisions that were made. Include:
+Uma lista das decisões de teste que foram tomadas. Inclua:
 
-- A description of what makes a good test (only test external behavior, not implementation details)
-- Which modules will be tested
-- Prior art for the tests (i.e. similar types of tests in the codebase)
+- Uma descrição do que constitui um bom teste (testar apenas comportamento externo, não detalhes de implementação)
+- Quais módulos serão testados
+- Arte prévia para os testes (ou seja, tipos semelhantes de testes na base de código)
 
-## Out of Scope
+## Fora de Escopo
 
-A description of the things that are out of scope for this spec.
+Uma descrição das coisas que estão fora de escopo para esta spec.
 
-## Further Notes
+## Notas Adicionais
 
-Any further notes about the feature.
+Quaisquer notas adicionais sobre a funcionalidade.
 
 </spec-template>

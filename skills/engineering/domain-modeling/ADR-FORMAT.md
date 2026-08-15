@@ -1,47 +1,47 @@
-# ADR Format
+# Formato de ADR
 
-ADRs live in `docs/adr/` and use sequential numbering: `0001-slug.md`, `0002-slug.md`, etc.
+ADRs vivem em `docs/adr/` e usam numeração sequencial: `0001-slug.md`, `0002-slug.md`, etc.
 
-Create the `docs/adr/` directory lazily — only when the first ADR is needed.
+Crie o diretório `docs/adr/` sob demanda (lazily) — apenas quando o primeiro ADR for necessário.
 
 ## Template
 
 ```md
-# {Short title of the decision}
+# {Título curto da decisão}
 
-{1-3 sentences: what's the context, what did we decide, and why.}
+{1-3 frases: qual é o contexto, o que decidimos e por quê.}
 ```
 
-That's it. An ADR can be a single paragraph. The value is in recording *that* a decision was made and *why* — not in filling out sections.
+É só isso. Um ADR pode ser um único parágrafo. O valor está em registrar *que* uma decisão foi tomada e o *porquê* — não em preencher seções.
 
-## Optional sections
+## Seções opcionais
 
-Only include these when they add genuine value. Most ADRs won't need them.
+Inclua-as apenas quando agregarem valor genuíno. A maioria dos ADRs não precisará delas.
 
-- **Status** frontmatter (`proposed | accepted | deprecated | superseded by ADR-NNNN`) — useful when decisions are revisited
-- **Considered Options** — only when the rejected alternatives are worth remembering
-- **Consequences** — only when non-obvious downstream effects need to be called out
+- Frontmatter de **Status** (`proposed | accepted | deprecated | superseded by ADR-NNNN`) — útil quando decisões são revisitadas
+- **Opções Consideradas** — apenas quando as alternativas rejeitadas valerem a pena ser lembradas
+- **Consequências** — apenas quando efeitos colaterais não óbvios precisarem ser destacados
 
-## Numbering
+## Numeração
 
-Scan `docs/adr/` for the highest existing number and increment by one.
+Varra `docs/adr/` em busca do maior número existente e incremente em um.
 
-## When to offer an ADR
+## Quando oferecer um ADR
 
-All three of these must be true:
+Todos estes três pontos devem ser verdadeiros:
 
-1. **Hard to reverse** — the cost of changing your mind later is meaningful
-2. **Surprising without context** — a future reader will look at the code and wonder "why on earth did they do it this way?"
-3. **The result of a real trade-off** — there were genuine alternatives and you picked one for specific reasons
+1. **Difícil de reverter** — o custo de mudar de ideia mais tarde é significativo
+2. **Surpreendente sem contexto** — um leitor futuro olhará para o código e se perguntará "por que diabos fizeram desta forma?"
+3. **O resultado de um trade-off real** — existiam alternativas genuínas e você escolheu uma por motivos específicos
 
-If a decision is easy to reverse, skip it — you'll just reverse it. If it's not surprising, nobody will wonder why. If there was no real alternative, there's nothing to record beyond "we did the obvious thing."
+Se uma decisão for fácil de reverter, ignore-a — você simplesmente vai revertê-la. Se não for surpreendente, ninguém vai se perguntar o porquê. Se não existia alternativa real, não há nada a registrar além de "fizemos o óbvio".
 
-### What qualifies
+### O que se qualifica
 
-- **Architectural shape.** "We're using a monorepo." "The write model is event-sourced, the read model is projected into Postgres."
-- **Integration patterns between contexts.** "Ordering and Billing communicate via domain events, not synchronous HTTP."
-- **Technology choices that carry lock-in.** Database, message bus, auth provider, deployment target. Not every library — just the ones that would take a quarter to swap out.
-- **Boundary and scope decisions.** "Customer data is owned by the Customer context; other contexts reference it by ID only." The explicit no-s are as valuable as the yes-s.
-- **Deliberate deviations from the obvious path.** "We're using manual SQL instead of an ORM because X." Anything where a reasonable reader would assume the opposite. These stop the next engineer from "fixing" something that was deliberate.
-- **Constraints not visible in the code.** "We can't use AWS because of compliance requirements." "Response times must be under 200ms because of the partner API contract."
-- **Rejected alternatives when the rejection is non-obvious.** If you considered GraphQL and picked REST for subtle reasons, record it — otherwise someone will suggest GraphQL again in six months.
+- **Formato arquitetural.** "Estamos usando um monorepo." "O write model é event-sourced, o read model é projetado no Postgres."
+- **Padrões de integração entre contextos.** "Ordering e Billing se comunicam via domain events, não HTTP síncrono."
+- **Escolhas tecnológicas que trazem lock-in.** Banco de dados, barramento de mensagens, provedor de autenticação, alvo de deploy. Não toda biblioteca — apenas aquelas que levariam um trimestre para trocar.
+- **Decisões de divisa e escopo.** "Dados do cliente pertencem ao contexto Customer; outros contextos fazem referência a eles apenas por ID." Os nãos explícitos são tão valiosos quanto os sims.
+- **Desvios deliberados do caminho óbvio.** "Estamos usando SQL manual em vez de um ORM devido a X." Qualquer coisa em que um leitor razoável assumiria o oposto. Isso impede que o próximo engenheiro "corrija" algo que foi deliberado.
+- **Restrições não visíveis no código.** "Não podemos usar AWS devido a requisitos de conformidade." "Os tempos de resposta devem ser inferiores a 200ms por causa do contrato da API de parceiros."
+- **Alternativas rejeitadas quando a rejeição não é óbvia.** Se você considerou GraphQL e escolheu REST por motivos sutis, registre isso — caso contrário, alguém sugerirá GraphQL novamente em seis meses.

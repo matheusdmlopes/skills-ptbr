@@ -1,0 +1,34 @@
+NOTICE
+
+Este repositório é uma tradução para português do Brasil (pt-BR) da coleção
+de agent skills publicada por Matt Pocock em:
+
+    https://github.com/mattpocock/skills
+
+Licenciado sob a licença MIT (ver LICENSE). Copyright original (c) 2026 Matt
+Pocock. Esta tradução é uma obra derivada, não oficial e não afiliada ao
+autor original.
+
+O que foi traduzido
+--------------------
+As 25 skills promovidas (skills/engineering/ e skills/productivity/,
+listadas em .claude-plugin/plugin.json), mais duas skills em beta
+(claude-handoff e loop-me, em skills/in-progress/), e o README.md da raiz.
+Cada skill traduzida mantém o nome do diretório, os nomes de comando e os
+nomes de artefato gerado idênticos ao original, para preservar a
+compatibilidade com quem usa a versão em inglês no mesmo repositório —
+apenas a prosa foi traduzida.
+
+O que não foi traduzido
+------------------------
+Skills em skills/misc/ e skills/deprecated/, a documentação em docs/, e a
+infraestrutura de plugin (.claude-plugin/) permanecem no inglês original,
+sem alteração.
+
+Como o histórico foi mantido
+------------------------------
+Este repositório importou o histórico completo de commits do repositório
+original via git, em vez de ser um fork do GitHub. Ver
+.agents/adr/0004-proveniencia-por-historico-importado.md para o raciocínio
+completo, e .agents/adr/0003-nomes-invariantes-na-traducao.md para as
+regras de nomenclatura invariante mencionadas acima.

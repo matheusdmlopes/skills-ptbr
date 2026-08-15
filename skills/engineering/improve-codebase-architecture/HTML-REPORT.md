@@ -1,23 +1,23 @@
-# HTML Report Format
+# Formato do Relatório HTML
 
-The architectural review is rendered as a single self-contained HTML file in the OS temp directory. Tailwind and Mermaid both come from CDNs. Mermaid handles graph-shaped diagrams reliably; hand-built divs and inline SVG handle the more editorial visuals (mass diagrams, cross-sections). Mix the two — don't lean on Mermaid for everything, it'll start to look generic.
+A revisão arquitetural é renderizada como um único arquivo HTML autocontido no diretório temporário do sistema operacional. Tailwind e Mermaid vêm ambos de CDNs. O Mermaid lida com diagramas em formato de grafo de forma confiável; divs construídos à mão e SVG inline lidam com recursos visuais mais editoriais (diagramas de massa, cortes transversais). Misture os dois — não dependa do Mermaid para tudo, começará a parecer genérico.
 
 ## Scaffold
 
 ```html
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
-    <title>Architecture review — {{repo name}}</title>
+    <title>Revisão de arquitetura — {{repo name}}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module">
       import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
       mermaid.initialize({ startOnLoad: true, theme: "neutral", securityLevel: "loose" });
     </script>
     <style>
-      /* small custom layer for things Tailwind doesn't cover cleanly:
-         dashed seam lines, hand-drawn-feeling arrow heads, etc. */
+      /* pequena camada personalizada para coisas que o Tailwind não cobre de forma limpa:
+         linhas de costura tracejadas, pontas de seta com aspecto feito à mão, etc. */
       .seam { stroke-dasharray: 4 4; }
       .leak { stroke: #dc2626; }
       .deep { background: linear-gradient(135deg, #0f172a, #1e293b); }
@@ -33,34 +33,34 @@ The architectural review is rendered as a single self-contained HTML file in the
 </html>
 ```
 
-## Header
+## Cabeçalho
 
-Repo name, date, and a compact legend: solid box = module, dashed line = seam, red arrow = leakage, thick dark box = deep module. No introduction paragraph — straight into the candidates.
+Nome do repositório, data e uma legenda compacta: caixa sólida = módulo, linha tracejada = costura, seta vermelha = vazamento (leakage), caixa escura e grossa = deep module. Sem parágrafo de introdução — direto aos candidatos.
 
-## Candidate card
+## Card do candidato
 
-The diagrams carry the weight. Prose is sparse, plain, and uses the glossary terms (from the `/codebase-design` skill) without ceremony.
+Os diagramas carregam o peso. A prosa é esparsa, direta e usa os termos do glossário (da skill `/codebase-design`) sem rodeios.
 
-Each candidate is one `<article>`:
+Cada candidato é um `<article>`:
 
-- **Title** — short, names the deepening (e.g. "Collapse the Order intake pipeline").
-- **Badge row** — recommendation strength (`Strong` = emerald, `Worth exploring` = amber, `Speculative` = slate), plus a tag for the dependency category (`in-process`, `local-substitutable`, `ports & adapters`, `mock`).
-- **Files** — monospaced list, `font-mono text-sm`.
-- **Before / After diagram** — the centrepiece. Two columns, side by side. See patterns below.
-- **Problem** — one sentence. What hurts.
-- **Solution** — one sentence. What changes.
-- **Wins** — bullets, ≤6 words each. e.g. "Tests hit one interface", "Pricing logic stops leaking", "Delete 4 shallow wrappers".
-- **ADR callout** (if applicable) — one line in an amber-tinted box.
+- **Título** — curto, nomeia o aprofundamento (ex.: "Colapsar o pipeline de entrada de pedidos").
+- **Linha de badges** — força da recomendação (`Strong` = esmeralda, `Worth exploring` = âmbar, `Speculative` = slate), mais uma tag para a categoria de dependência (`in-process`, `local-substitutable`, `ports & adapters`, `mock`).
+- **Arquivos** — lista monoespaçada, `font-mono text-sm`.
+- **Diagrama de Antes / Depois** — a peça central. Duas colunas, lado a lado. Veja os padrões abaixo.
+- **Problema** — uma frase. O que incomoda.
+- **Solução** — uma frase. O que muda.
+- **Ganhos (Wins)** — tópicos, ≤6 palavras cada. ex.: "Testes atingem uma interface", "Lógica de preços para de vazar", "Exclui 4 wrappers rasos".
+- **Callout de ADR** (se aplicável) — uma linha em uma caixa com tom âmbar.
 
-No paragraphs of explanation. If the diagram needs a paragraph to be understood, redraw the diagram.
+Sem parágrafos de explicação. Se o diagrama precisar de um parágrafo para ser compreendido, redesenhe o diagrama.
 
-## Diagram patterns
+## Padrões de diagrama
 
-Pick the pattern that fits the candidate. Mix them. Don't make every diagram look the same — variety is part of the point.
+Escolha o padrão que se adapta ao candidato. Misture-os. Não faça todos os diagramas parecerem iguais — variedade faz parte do objetivo.
 
-### Mermaid graph (the workhorse for dependencies / call flow)
+### Grafo Mermaid (o cavalo de batalha para dependências / fluxo de chamadas)
 
-Use a Mermaid `flowchart` or `graph` when the point is "X calls Y calls Z, and look at the mess." Wrap it in a Tailwind-styled card so it doesn't feel parachuted in. Style with classDef to colour leakage edges red and the deep module dark. Sequence diagrams work well for "before: 6 round-trips; after: 1."
+Use um `flowchart` ou `graph` do Mermaid quando o ponto for "X chama Y que chama Z, e veja a bagunça". Envolva-o em um card estilizado com Tailwind para que não pareça deslocado. Estilize com classDef para colorir arestas de vazamento em vermelho e o deep module em escuro. Diagramas de sequência funcionam bem para "antes: 6 viagens de ida e volta (round-trips); depois: 1".
 
 ```html
 <div class="rounded-lg border border-slate-200 bg-white p-4">
@@ -75,49 +75,49 @@ Use a Mermaid `flowchart` or `graph` when the point is "X calls Y calls Z, and l
 </div>
 ```
 
-### Hand-built boxes-and-arrows (when Mermaid's layout fights you)
+### Caixas e setas feitas à mão (quando o layout do Mermaid brigar com você)
 
-Modules as `<div>`s with borders and labels. Arrows as inline SVG `<line>` or `<path>` elements positioned absolutely over a relative container. Reach for this when you want the "after" diagram to feel like one thick-bordered deep module with greyed-out internals — Mermaid won't render that with the right weight.
+Módulos como `<div>`s com bordas e rótulos. Setas como elementos SVG inline `<line>` ou `<path>` posicionados de forma absoluta sobre um contêiner relativo. Recorra a isso quando quiser que o diagrama "depois" pareça um único deep module de bordas grossas com partes internas esmaecidas — o Mermaid não renderizará isso com o peso correto.
 
-### Cross-section (good for layered shallowness)
+### Corte transversal (bom para superficialidade em camadas)
 
-Stack horizontal bands (`h-12 border-l-4`) to show layers a call passes through. Before: 6 thin layers each doing nothing. After: 1 thick band labelled with the consolidated responsibility.
+Empilhe faixas horizontais (`h-12 border-l-4`) para mostrar as camadas pelas quais uma chamada passa. Antes: 6 camadas finas, cada uma fazendo nada. Depois: 1 faixa grossa rotulada com a responsabilidade consolidada.
 
-### Mass diagram (good for "interface as wide as implementation")
+### Diagrama de massa (bom para "interface tão ampla quanto a implementação")
 
-Two rectangles per module — one for interface surface area, one for implementation. Before: interface rectangle is nearly as tall as the implementation rectangle (shallow). After: interface rectangle is short, implementation rectangle is tall (deep).
+Dois retângulos por módulo — um para a área de superfície da interface, outro para a implementação. Antes: o retângulo da interface é quase tão alto quanto o retângulo da implementação (raso). Depois: o retângulo da interface é curto, o retângulo da implementação é alto (deep).
 
-### Call-graph collapse
+### Colapso do grafo de chamadas
 
-Before: a tree of function calls rendered as nested boxes. After: the same tree collapsed into one box, with the now-internal calls shown faded inside it.
+Antes: uma árvore de chamadas de funções renderizada como caixas aninhadas. Depois: a mesma árvore colapsada em uma única caixa, com as chamadas agora internas exibidas esmaecidas dentro dela.
 
-## Style guidance
+## Guia de estilo
 
-- Lean editorial, not corporate-dashboard. Generous whitespace. Serif optional for headings (`font-serif` works well with stone/slate).
-- Colour sparingly: one accent (emerald or indigo) plus red for leakage and amber for warnings.
-- Keep diagrams ~320px tall so before/after sits comfortably side by side without scrolling.
-- Use `text-xs uppercase tracking-wider` for module labels inside diagrams — they should read as schematic, not as UI.
-- The only scripts are the Tailwind CDN and the Mermaid ESM import. The report is otherwise static — no app code, no interactivity beyond Mermaid's own rendering.
+- Editorial enxuto, não um painel corporativo. Espaçamento generoso. Serifa opcional para títulos (`font-serif` funciona bem com stone/slate).
+- Cor com moderação: um destaque (esmeralda ou índigo) mais vermelho para vazamentos e âmbar para avisos.
+- Mantenha os diagramas com ~320px de altura para que o antes/depois fique confortavelmente lado a lado sem rolagem.
+- Use `text-xs uppercase tracking-wider` para rótulos de módulos dentro dos diagramas — eles devem ser lidos como esquemáticos, não como UI.
+- Os únicos scripts são o CDN do Tailwind e a importação ESM do Mermaid. O relatório é estático em tudo o mais — sem código de aplicação, sem interatividade além da própria renderização do Mermaid.
 
-## Top recommendation section
+## Seção de principal recomendação
 
-One larger card. Candidate name, one sentence on why, anchor link to its card. That's it.
+Um card maior. Nome do candidato, uma frase sobre o porquê, link âncora para o seu card. É só isso.
 
-## Tone
+## Tom
 
-Plain English, concise — but the architectural nouns and verbs come straight from the `/codebase-design` skill. Concision is not an excuse to drift.
+Português claro e conciso — mas os substantivos e verbos arquiteturais vêm direto da skill `/codebase-design`. Concisão não é desculpa para desvios.
 
-**Use exactly:** module, interface, implementation, depth, deep, shallow, seam, adapter, leverage, locality.
+**Use com exatidão:** módulo, interface, implementação, profundidade, deep, raso, costura, adaptador, alavancagem, localidade.
 
-**Never substitute:** component, service, unit (for module) · API, signature (for interface) · boundary (for seam) · layer, wrapper (for module, when you mean module).
+**Nunca substitua:** componente, serviço, unidade (para módulo) · API, assinatura (para interface) · divisa (para costura) · camada, wrapper (para módulo, quando quiser dizer módulo).
 
-**Phrasings that fit the style:**
+**Formulações que se encaixam no estilo:**
 
-- "Order intake module is shallow — interface nearly matches the implementation."
-- "Pricing leaks across the seam."
-- "Deepen: one interface, one place to test."
-- "Two adapters justify the seam: HTTP in prod, in-memory in tests."
+- "Módulo de entrada de pedidos é raso — a interface quase coincide com a implementação."
+- "Preços vazam através da costura."
+- "Aprofunde: uma interface, um lugar para testar."
+- "Dois adaptadores justificam a costura: HTTP em produção, em memória nos testes."
 
-**Wins bullets** name the gain in glossary terms: *"locality: bugs concentrate in one module"*, *"leverage: one interface, N call sites"*, *"interface shrinks; implementation absorbs the wrappers"*. Don't write *"easier to maintain"* or *"cleaner code"* — those terms aren't in the glossary and don't earn their place.
+**Tópicos de ganhos (Wins)** nomeiam o ganho em termos do glossário: *"localidade: bugs se concentram em um módulo"*, *"alavancagem: uma interface, N pontos de chamada"*, *"interface encolhe; implementação absorve os wrappers"*. Não escreva *"mais fácil de manter"* ou *"código mais limpo"* — esses termos não estão no glossário e não justificam seu espaço.
 
-No hedging, no throat-clearing, no "it's worth noting that…". If a sentence could be a bullet, make it a bullet. If a bullet could be cut, cut it. If a term isn't in the `/codebase-design` glossary, reach for one that is before inventing a new one.
+Sem hesitação, sem enrolação, sem "vale ressaltar que…". Se uma frase puder ser um tópico, torne-a um tópico. Se um tópico puder ser cortado, corte-o. Se um termo não estiver no glossário de `/codebase-design`, procure um que esteja antes de inventar um novo.

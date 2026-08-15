@@ -1,105 +1,105 @@
 ---
 name: to-tickets
-description: Break a plan, spec, or the current conversation into a set of tracer-bullet tickets, each declaring its blocking edges, published to the configured tracker — edges as text in one file per ticket locally, or native blocking links on a real tracker.
+description: Divida um plano, spec ou a conversa atual em um conjunto de tickets de bala traçante, cada um declarando suas arestas de bloqueio, publicados no tracker configurado — arestas como texto em um arquivo por ticket localmente, ou links de bloqueio nativos em um tracker real.
 disable-model-invocation: true
 ---
 
 # To Tickets
 
-Break a plan, spec, or conversation into a set of **tickets** — tracer-bullet vertical slices, each declaring the tickets that **block** it.
+Divida um plano, spec ou conversa em um conjunto de **tickets** — fatias verticais de bala traçante, cada uma declarando os tickets que a **bloqueiam**.
 
-The issue tracker and triage label vocabulary should have been provided to you — run `/setup-matt-pocock-skills` if not.
+O vocabulário de issue tracker e de labels de triagem deve ter sido fornecido a você — execute `/setup-matt-pocock-skills` se não foi.
 
-## Process
+## Processo
 
-### 1. Gather context
+### 1. Reúna o contexto
 
-Work from whatever is already in the conversation context. If the user passes a reference (a spec path, an issue number or URL) as an argument, fetch it and read its full body and comments.
+Trabalhe a partir do que já está no contexto da conversa. Se o usuário passar uma referência (o caminho de uma spec, o número ou URL de uma issue) como argumento, busque-a e leia seu corpo e comentários na íntegra.
 
-### 2. Explore the codebase (optional)
+### 2. Explore a base de código (opcional)
 
-If you have not already explored the codebase, do so to understand the current state of the code. Ticket titles and descriptions should use the project's domain glossary vocabulary, and respect ADRs in the area you're touching.
+Se ainda não explorou a base de código, faça-o para entender o estado atual do código. Os títulos e descrições dos tickets devem usar o vocabulário do glossário de domínio do projeto e respeitar os ADRs na área em que você estiver mexendo.
 
-Look for opportunities to prefactor the code to make the implementation easier. "Make the change easy, then make the easy change."
+Procure oportunidades para pré-fatorar o código e facilitar a implementação. "Torne a mudança fácil, depois faça a mudança fácil."
 
-### 3. Draft vertical slices
+### 3. Esboce as fatias verticais
 
-Break the work into **tracer bullet** tickets.
+Divida o trabalho em tickets de **bala traçante**.
 
 <vertical-slice-rules>
 
-- Each slice cuts a narrow but COMPLETE path through every layer (schema, API, UI, tests) — vertical, NOT a horizontal slice of one layer
-- A completed slice is demoable or verifiable on its own
-- Each slice is sized to fit in a single fresh context window
-- Any prefactoring should be done first
+- Cada fatia corta um caminho estreito, mas COMPLETO, através de todas as camadas (schema, API, UI, testes) — vertical, e NÃO uma fatia horizontal de uma única camada
+- Uma fatia concluída é demonstrável ou verificável por si só
+- Cada fatia é dimensionada para caber em uma única janela de contexto limpa
+- Qualquer pré-fatoração deve ser feita primeiro
 
 </vertical-slice-rules>
 
-Give each ticket its **blocking edges** — the other tickets that must complete before it can start. A ticket with no blockers can start immediately.
+Dê a cada ticket suas **arestas de bloqueio** — os outros tickets que devem ser concluídos antes que ele possa começar. Um ticket sem bloqueadores pode começar imediatamente.
 
-**Wide refactors are the exception to vertical slicing.** A **wide refactor** is one mechanical change — rename a column, retype a shared symbol — whose **blast radius** fans across the whole codebase, so a single edit breaks thousands of call sites at once and no vertical slice can land green. Don't force it into a tracer bullet; sequence it as **expand–contract**. First expand: add the new form beside the old so nothing breaks. Then migrate the call sites over in batches sized by blast radius (per package, per directory), each batch its own ticket blocked by the expand, keeping CI green batch to batch because the old form still exists. Finally contract: delete the old form once no caller remains, in a ticket blocked by every migrate batch. When even the batches can't stay green alone, keep the sequence but let them share an integration branch that all block a final integrate-and-verify ticket — green is promised only there.
+**Refatorações amplas são a exceção ao fatiamento vertical.** Uma **refatoração ampla** é uma alteração mecânica — renomear uma coluna, retipar um símbolo compartilhado — cujo **raio de impacto** se espalha por toda a base de código, de modo que uma única edição quebra milhares de locais de chamada de uma só vez e nenhuma fatia vertical consegue passar em verde. Não a force em uma bala traçante; encadeie-a como **expand–contract**. Primeiro expanda: adicione a nova forma ao lado da antiga para que nada quebre. Em seguida, migre os locais de chamada em lotes dimensionados pelo raio de impacto (por pacote, por diretório), sendo cada lote seu próprio ticket bloqueado pela expansão, mantendo a CI verde de lote em lote porque a forma antiga ainda existe. Por fim, contraia: exclua a forma antiga assim que nenhum chamador restar, em um ticket bloqueado por todos os lotes de migração. Quando nem mesmo os lotes conseguirem se manter verdes sozinhos, mantenha a sequência, mas faça-os compartilhar um branch de integração que, em conjunto, bloqueia um ticket final de integrar-e-verificar — o verde é prometido apenas lá.
 
-### 4. Quiz the user
+### 4. Questione o usuário
 
-Present the proposed breakdown as a numbered list. For each ticket, show:
+Apresente a divisão proposta como uma lista numerada. Para cada ticket, mostre:
 
-- **Title**: short descriptive name
-- **Blocked by**: which other tickets (if any) must complete first
-- **What it delivers**: the end-to-end behaviour this ticket makes work
+- **Título**: nome descritivo curto
+- **Bloqueado por**: quais outros tickets (se houver) devem ser concluídos primeiro
+- **O que entrega**: o comportamento de ponta a ponta que este ticket faz funcionar
 
-Ask the user:
+Pergunte ao usuário:
 
-- Does the granularity feel right? (too coarse / too fine)
-- Are the blocking edges correct — does each ticket only depend on tickets that genuinely gate it?
-- Should any tickets be merged or split further?
+- A granularidade parece adequada? (muito grossa / muito fina)
+- As arestas de bloqueio estão corretas — cada ticket depende apenas de tickets que genuinamente o impedem de avançar?
+- Algum ticket deve ser mesclado ou dividido ainda mais?
 
-Iterate until the user approves the breakdown.
+Itere até que o usuário aprove a divisão.
 
-### 5. Publish the tickets to the configured tracker
+### 5. Publique os tickets no tracker configurado
 
-Publish the approved tickets. **How** depends on the tracker `/setup-matt-pocock-skills` configured — the tickets are the same either way, only the shape of the blocking edges changes:
+Publique os tickets aprovados. **Como** fazer depende do tracker configurado por `/setup-matt-pocock-skills` — os tickets são os mesmos em ambos os casos, apenas o formato das arestas de bloqueio muda:
 
-- **Local files** → write one file per ticket under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01` in dependency order (blockers first). Each file's "Blocked by" lists the numbers/titles it depends on. Use the per-ticket file template below — one ticket per file, never a single combined file.
-- **A real issue tracker (GitHub, Linear, …)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. Apply the `ready-for-agent` triage label unless instructed otherwise — the tickets are agent-grabbable by construction.
+- **Arquivos locais** → escreva um arquivo por ticket sob `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numerados a partir de `01` em ordem de dependência (bloqueadores primeiro). O campo "Bloqueado por" de cada arquivo lista os números/títulos dos quais ele depende. Use o template de arquivo por ticket abaixo — um ticket por arquivo, nunca um único arquivo combinado.
+- **Um issue tracker real (GitHub, Linear, …)** → publique uma issue por ticket em ordem de dependência (bloqueadores primeiro) para que as arestas de bloqueio de cada ticket possam referenciar identificadores reais. Use o relacionamento nativo de bloqueio / sub-issue da plataforma quando ela tiver um; caso contrário, defina o "Bloqueado por" de cada ticket para as issues bloqueadoras. Aplique a label de triagem `ready-for-agent`, a menos que instruído de outra forma — os tickets já estão prontos para serem assumidos por agentes por construção.
 
-Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom.
+Trabalhe na **fronteira**: qualquer ticket cujos bloqueadores estejam todos concluídos. Para uma cadeia puramente linear, isso significa de cima para baixo.
 
-Do NOT close or modify any parent issue.
+NÃO feche nem modifique nenhuma issue pai.
 
 <local-ticket-template>
 
-# <NN> — <Ticket title>
+# <NN> — <Título do ticket>
 
-**What to build:** the end-to-end behaviour this ticket makes work, from the user's perspective — not a layer-by-layer implementation list.
+**O que construir:** o comportamento de ponta a ponta que este ticket faz funcionar, sob a perspectiva do usuário — não uma lista de implementação camada por camada.
 
-**Blocked by:** the numbers/titles of the tickets that gate this one, or "None — can start immediately".
+**Bloqueado por:** os números/títulos dos tickets que bloqueiam este, ou "Nenhum — pode começar imediatamente".
 
 **Status:** ready-for-agent
 
-- [ ] Acceptance criterion 1
-- [ ] Acceptance criterion 2
+- [ ] Critério de aceitação 1
+- [ ] Critério de aceitação 2
 
 </local-ticket-template>
 
 <issue-template>
 
-## Parent
+## Pai
 
-A reference to the parent issue on the tracker (if the source was an existing issue, otherwise omit this section).
+Uma referência à issue pai no tracker (se a fonte foi uma issue existente; caso contrário, omita esta seção).
 
-## What to build
+## O que construir
 
-The end-to-end behaviour this ticket makes work, from the user's perspective — not layer-by-layer implementation.
+O comportamento de ponta a ponta que este ticket faz funcionar, sob a perspectiva do usuário — não implementação camada por camada.
 
-## Acceptance criteria
+## Critérios de aceitação
 
-- [ ] Criterion 1
-- [ ] Criterion 2
+- [ ] Critério 1
+- [ ] Critério 2
 
-## Blocked by
+## Bloqueado por
 
-- A reference to each blocking ticket, or "None — can start immediately".
+- Uma referência a cada ticket bloqueador, ou "Nenhum — pode começar imediatamente".
 
 </issue-template>
 
-In either form, avoid specific file paths or code snippets — they go stale fast. Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it and note briefly that it came from a prototype. Trim to the decision-rich parts — not a working demo, just the important bits.
+Em ambos os formatos, evite caminhos de arquivo específicos ou trechos de código — eles ficam desatualizados rápido. Exceção: se um protótipo produziu um trecho que codifica uma decisão com mais precisão do que a prosa é capaz (máquina de estados, reducer, schema, formato de tipo), inclua-o inline e anote brevemente que ele veio de um protótipo. Reduza aos trechos ricos em decisões — não uma demo funcional, apenas as partes importantes.

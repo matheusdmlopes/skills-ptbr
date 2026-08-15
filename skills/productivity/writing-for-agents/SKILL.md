@@ -1,81 +1,81 @@
 ---
 name: writing-for-agents
-description: Writing documents for agents. Use when creating or editing skills, or modifying AGENTS.md or CLAUDE.md.
+description: Redação de documentos para agentes. Use ao criar ou editar skills, ou ao modificar AGENTS.md ou CLAUDE.md.
 ---
 
-Reference for writing any document an agent consumes — a skill, an `AGENTS.md` / `CLAUDE.md`, a doc reached by a pointer. The packaging differs; the writing does not: the same levers make each one predictable — the agent taking the same _process_ every run, not producing the same output.
+Referência para a redação de qualquer documento consumido por um agente — uma skill, um `AGENTS.md` / `CLAUDE.md`, um documento acessado por um ponteiro. A embalagem difere; a redação não: as mesmas alavancas tornam cada um previsível — o agente seguindo o mesmo _processo_ a cada execução, sem necessariamente produzir a mesma saída.
 
-When the document you're writing is a skill, read [`SKILL-MECHANICS.md`](SKILL-MECHANICS.md) for frontmatter, invocation choice, and router skills.
+Quando o documento que você estiver escrevendo for uma skill, leia [`SKILL-MECHANICS.md`](SKILL-MECHANICS.md) para frontmatter, escolha de invocação e skills roteadoras.
 
-## Context pointers
+## Ponteiros de contexto
 
-A **context pointer** is a reference held in the agent's context that names some out-of-context material and encodes the condition for reaching it. A skill's description is one; a line in `AGENTS.md` naming a doc is the same object. The pointer's _wording_, not its target, decides when the agent reaches the material — and how reliably. A must-have target behind a weakly worded pointer is a variance bug: sharpen the wording first, and inline the material only if sharpening fails.
+Um **ponteiro de contexto** (context pointer) é uma referência mantida no contexto do agente que nomeia algum material fora do contexto e codifica a condição para alcançá-lo. A descrição de uma skill é um; uma linha no `AGENTS.md` nomeando um documento é o mesmo objeto. A _formulação_ do ponteiro, e não o seu alvo, decide quando o agente alcança o material — e com que confiabilidade. Um alvo indispensável atrás de um ponteiro mal formulado é um bug de variância: aprimore a formulação primeiro e incorpore o material em linha somente se o aprimoramento falhar.
 
-A pointer does two jobs — state what the material is, and list the **branches** that should trigger reaching it (a branch is a distinct case the document handles, so different runs take different paths through it). Every word of an always-loaded pointer costs on every turn, so it earns even harder pruning than the body:
+Um ponteiro cumpre duas funções — declarar o que é o material e listar as **ramificações** (branches) que devem disparar o seu acesso (uma ramificação é um caso distinto tratado pelo documento, de modo que execuções diferentes sigam caminhos diferentes através dele). Cada palavra de um ponteiro sempre carregado consome orçamento em cada turno, exigindo uma poda ainda mais rigorosa que a do corpo:
 
-- **Front-load the leading word** — the pointer is where it does its triggering work.
-- **One trigger per branch.** Synonyms that rename a single branch are one branch written twice; collapse them and keep only genuinely distinct branches.
-- **Cut identity the body already carries.**
+- **Destaque a leading word logo no início** — o ponteiro é onde ela realiza seu trabalho de disparo.
+- **Um gatilho por ramificação.** Sinônimos que apenas renomeiam uma única ramificação são uma ramificação escrita duas vezes; condense-os e mantenha apenas ramificações genuinamente distintas.
+- **Elimine elementos de identidade que o corpo já carrega.**
 
-## The two loads
+## As duas cargas
 
-Every document and pointer you add spends one of two budgets:
+Cada documento e ponteiro adicionado consome um de dois orçamentos:
 
-- **Context load** — the cost of always-loaded material on the agent's window: an `AGENTS.md` line, a skill description, anything sitting in context every turn, spending tokens and attention whether or not it fires.
-- **Cognitive load** — the cost on the human: which documents exist and when to reach for each. The human is the index. Not a cost to minimise — it is the price of human agency; spend it where human judgement matters, remove it where it does not.
+- **Carga de contexto** (context load) — o custo de material sempre carregado na janela do agente: uma linha do `AGENTS.md`, uma descrição de skill, qualquer coisa presente no contexto a cada turno, gastando tokens e atenção quer seja acionada ou não.
+- **Carga cognitiva** (cognitive load) — o custo sobre o humano: quais documentos existem e quando recorrer a cada um. O humano é o índice. Não é um custo a ser minimizado — é o preço da agência humana; gaste-o onde o julgamento humano importa, remova-o onde não importa.
 
-Material reached only through a pointer escapes context load at the price of the pointer's own line; material with no pointer at all rides entirely on cognitive load.
+Material acessado apenas através de um ponteiro escapa da carga de contexto ao preço da linha do próprio ponteiro; material sem ponteiro algum recai inteiramente sobre a carga cognitiva.
 
-## Information hierarchy
+## Hierarquia de informações
 
-A document is built from two content types — **steps** (the ordered actions the agent performs) and **reference** (definitions, rules, facts consulted on demand) — that mix freely: all steps (a recipe), all reference (a review's rules, this skill), or both. The core decision is where each piece sits on the **information hierarchy**, a ladder ranked by how immediately the agent needs the material:
+Um documento é construído a partir de dois tipos de conteúdo — **passos** (as ações ordenadas que o agente executa) e **referência** (definições, regras, fatos consultados sob demanda) — que se misturam livremente: apenas passos (uma receita), apenas referência (as regras de uma revisão, esta skill) ou ambos. A decisão central é onde cada parte se posiciona na **hierarquia de informações**, uma escala ordenada pelo quão imediatamente o agente precisa do material:
 
-1. **In-file step** — the primary tier: what the agent does, in order.
-2. **In-file reference** — consulted on demand. Often a legitimately flat peer-set (every rule of a review on one rung) — a fine arrangement, not a smell.
-3. **Disclosed reference** — pushed out into a separate file, reached by a context pointer, loaded only when the pointer fires. Spans a sibling file in the same folder through fully external reference that lives anywhere and any document can point at.
+1. **Passo no arquivo** (in-file step) — o nível primário: o que o agente faz, em ordem.
+2. **Referência no arquivo** (in-file reference) — consultada sob demanda. Frequentemente um conjunto nivelado de regras equivalentes (cada regra de uma revisão em um mesmo degrau) — um arranjo legítimo, não um code smell.
+3. **Referência revelada** (disclosed reference) — deslocada para um arquivo separado, acessada por um ponteiro de contexto, carregada apenas quando o ponteiro dispara. Abrange desde um arquivo irmão na mesma pasta até uma referência totalmente externa que reside em qualquer lugar e à qual qualquer documento pode apontar.
 
-Push too little down and the top bloats; push too much and you hide material the agent actually needs. That tension is the whole decision.
+Desloque pouco para baixo e o topo incha; desloque demais e você oculta material de que o agente realmente precisa. Essa tensão é toda a decisão.
 
-**Progressive disclosure** is the move down the ladder — out of the main file and behind a pointer — so the top stays legible. Not primarily a token optimisation: it is how the hierarchy is protected. Branching is the cleanest disclosure test: inline what every branch needs, and push behind a pointer what only some branches reach. When a document has steps, in-file reference that should be disclosed buries them and turns attending to them into a coin-flip — a variance lever, not just a legibility one.
+**Revelação progressiva** (progressive disclosure) é o movimento descendo a escala — para fora do arquivo principal e atrás de um ponteiro — para que o topo permaneça legível. Não é primariamente uma otimização de tokens: é como a hierarquia é protegida. A ramificação é o teste de revelação mais limpo: incorpore o que toda ramificação precisa e empurre para trás de um ponteiro o que apenas algumas ramificações acessam. Quando um documento contém passos, a referência no arquivo que deveria ser revelada progressivamente acaba por soterrá-los e transforma a atenção dada a eles em cara ou coroa — uma alavanca de variância, não apenas de legibilidade.
 
-**Co-location** is the within-file companion: where the ladder decides _how far down_ a piece sits, co-location decides _what sits beside it_ once there. Keep a concept's definition, rules, and caveats under one heading rather than scattered, so reading one part brings its neighbours with it. The test: the document should read like documentation written for the agent — grouped material reads that way; scattered material does not. (Distinct from duplication: that repeats one meaning in two places; scattering fragments one meaning across many.)
+**Co-localização** (co-location) é o complemento interno no arquivo: onde a escala decide o _quão abaixo_ uma parte fica, a co-localização decide _o que fica ao lado dela_ uma vez lá. Mantenha a definição, as regras e as ressalvas de um conceito sob um único cabeçalho em vez de espalhadas, para que a leitura de uma parte traga seus vizinhos junto. O teste: o documento deve ser lido como documentação escrita para o agente — material agrupado soa assim; material espalhado, não. (Distinto de duplicação: esta repete um mesmo significado em dois lugares; a dispersão fragmenta um significado em vários.)
 
-**Sprawl** is the failure mode here: a document simply too long, even when every line is live and unique. Attention thins across the excess, and every extra line is one more to keep relevant. The cure is the ladder: disclose reference behind pointers, and split by branch or sequence so each path carries only what it needs.
+**Prolixidade descontrolada** (sprawl) é o modo de falha aqui: um documento simplesmente longo demais, mesmo quando cada linha é ativa e única. A atenção se dispersa pelo excesso, e cada linha extra é mais uma a se manter relevante. A cura é a escala: revele a referência atrás de ponteiros e divida por ramificação ou sequência para que cada caminho carregue apenas o necessário.
 
-## Steps and completion criteria
+## Passos e critérios de conclusão
 
-Every step ends on a **completion criterion** — the condition that tells the agent the work is done. Two properties make it a lever:
+Cada passo termina em um **critério de conclusão** (completion criterion) — a condição que informa ao agente que o trabalho está concluído. Duas propriedades fazem dele uma alavanca:
 
-- **Clarity** — can the agent tell done from not-done? A vague bound ("understanding reached") invites **premature completion**: ending the step before it is genuinely done, attention slipping to _being done_. The visible steps still ahead — the **post-completion steps** — supply the pull; the criterion's clarity is the resistance. Defend in order: **sharpen the bound first** (local and cheap); only if it is irreducibly fuzzy _and_ you observe the rush, hide the later steps by splitting the sequence — and hiding only works across a real context boundary (a hand-off or a subagent dispatch; an inline call leaves the later steps in context and clears nothing).
-- **Demand** — how much it requires. "Every modified model accounted for" forces thorough work where "produce a change list" does not. Demand drives **legwork** — the digging the agent does within the work, latent in the wording rather than written as its own step — and it is not step-bound: "every rule applied" binds a body of flat reference just as "every step done" binds a sequence, which is how an all-reference document still carries an exhaustiveness bar.
+- **Clareza** — o agente consegue distinguir concluído de não concluído? Um limite vago ("entendimento alcançado") convida à **conclusão prematura** (premature completion): encerrar o passo antes de ele estar genuinamente concluído, com a atenção deslizando para o _estar concluído_. Os passos visíveis adiante — os **passos pós-conclusão** — fornecem a atração; a clareza do critério é a resistência. Defend em ordem: **torne o limite mais nítido primeiro** (local e barato); apenas se ele for irredutivelmente difuso _e_ você observar a pressa, oculte os passos posteriores dividindo a sequência — e ocultar só funciona através de uma divisa de contexto real (um handoff ou um despacho de subagente; uma chamada em linha mantém os passos posteriores no contexto e não limpa nada).
+- **Exigência** — o quanto ele requer. "Todos os modelos modificados contabilizados" força um trabalho minucioso onde "produzir uma lista de alterações" não o faz. A exigência impulsiona o **trabalho de base** (legwork) — a investigação que o agente faz durante o trabalho, latente na formulação em vez de escrita como um passo próprio — e não está restrita a passos: "todas as regras aplicadas" vincula um corpo de referência nivelada da mesma forma que "todos os passos concluídos" vincula uma sequência, que é como um documento puramente de referência ainda impõe uma barra de exaustividade.
 
-The strongest criteria are both checkable and exhaustive.
+Os critérios mais fortes são simultaneamente verificáveis e exaustivos.
 
-## When to split
+## Quando dividir
 
-Splitting one document into two spends one of the two loads, so split only when the cut earns it:
+Dividir um documento em dois consome uma das duas cargas; portanto, divida apenas quando o corte justificar o custo:
 
-- **By sequence** — split a run of steps where the post-completion steps tempt the agent to rush the one in front of it. Keeping them out of view drives more legwork on the current task. Beware the reverse: merging sequences exposes each step's later steps to what follows, inviting premature completion.
-- **By invocation** — skill-specific: see [`SKILL-MECHANICS.md`](SKILL-MECHANICS.md).
+- **Por sequência** — divida uma série de passos onde os passos pós-conclusão tentam o agente a apressar o passo atual. Mantê-los fora de vista estimula mais trabalho de base na tarefa atual. Cuidado com o inverso: mesclar sequências expõe os passos posteriores de cada etapa ao que vem a seguir, convidando à conclusão prematura.
+- **Por invocação** — específico de skill: consulte [`SKILL-MECHANICS.md`](SKILL-MECHANICS.md).
 
 ## Leading words
 
-A **leading word** is a compact concept already living in the model's pretraining that the agent thinks with while running the document (_lesson_, _fog of war_, _tracer bullets_). Repeated as a token, never as a sentence, it accumulates a distributed definition and anchors a whole region of behaviour in the fewest tokens, by recruiting priors the model already holds. Coining your own works if you define it clearly, but a made-up word recruits no priors — you pay in definition tokens what a pretrained word gives free; reach for an existing word first.
+Uma **leading word** é um conceito compacto já presente no pré-treinamento do modelo com o qual o agente raciocina durante a execução do documento (_lesson_, _fog of war_, _tracer bullets_). Repetida como um token, nunca como uma frase, ela acumula uma definição distribuída e ancora toda uma região de comportamento na menor quantidade de tokens, recrutando priors que o modelo já possui. Criar termos próprios funciona se você os definir com clareza, mas uma palavra inventada não recruta priors — você paga em tokens de definição o que uma palavra pré-treinada fornece de graça; recorra a uma palavra existente primeiro.
 
-It anchors twice. In the body, _execution_: the agent reaches for the same behaviour every time the word appears, and inside flat reference it focuses attention on a class of thing to look for. In a pointer, _invocation_: when the same word lives in your prompts, your docs, and your codebase, the agent links that shared language to the material and reaches it more reliably.
+Ela ancora de duas formas. No corpo, na _execução_: o agente recorre ao mesmo comportamento toda vez que a palavra aparece, e dentro de uma referência nivelada ela foca a atenção em uma classe de elementos a procurar. Em um ponteiro, na _invocação_: quando a mesma palavra está presente em seus prompts, em seus documentos e em sua base de código, o agente conecta essa linguagem compartilhada ao material e o alcança com mais confiabilidade.
 
-Hunt for opportunities to refactor with leading words. A triad spelled out at three sites, a pointer spending a sentence to gesture at one idea — each is a passage begging to collapse into a single token:
+Procure oportunidades de refatorar com leading words. Uma tríade descrita em três locais, um ponteiro gastando uma frase para sinalizar uma única ideia — cada um é um trecho pedindo para ser condensado em um único token:
 
-- "fast, deterministic, low-overhead" → _tight_ (a _tight_ loop).
-- "a loop you believe in" → _red_ — a fuzzy gate becomes a binary observable state (the loop goes _red_ on the bug, or it doesn't).
+- "rápido, determinístico, de baixo overhead" → _tight_ (um loop _tight_).
+- "um loop no qual você confia" → _red_ — uma restrição difusa se torna um estado observável binário (o loop fica _red_ no bug, ou não fica).
 
-You win twice: fewer tokens, and a sharper hook for the agent to hang its thinking on. Assume every document is carrying restatements that leading words retire — go find them.
+Você ganha em dobro: menos tokens e um gancho mais nítido para o agente ancorar seu raciocínio. Assuma que todo documento carrega reiterações que leading words eliminam — encontre-as.
 
-**Negation** is the failure mode beside this lever: steering by prohibition drags the forbidden behaviour into context and makes it _more_ available, not less. _Don't think of an elephant_, and the elephant is all there is; the negation is a weak modifier the strongly-activated concept overruns, so the ban half-reads as an instruction to do the thing. Prompt the **positive** — state the target behaviour ("write one-line comments") so the banned one is never spoken. A prohibition earns its place only as a hard guardrail you cannot phrase positively; even then, pair it with the positive target so attention lands on what to do.
+**Negação** é o modo de falha ao lado dessa alavanca: conduzir por proibição arrasta o comportamento proibido para o contexto e o torna _mais_ disponível, não menos. _Não pense em um elefante_, e o elefante é tudo o que resta; a negação é um modificador fraco que o conceito fortemente ativado atropela, de modo que a proibição soa pela metade como uma instrução para fazer aquilo. Estimule o **positivo** — declare o comportamento desejado ("escreva comentários de uma linha") para que o proibido nunca seja pronunciado. Uma proibição só ganha seu lugar como uma trava rígida impossível de formular positivamente; mesmo assim, associe-a ao objetivo positivo para que a atenção se fixe no que deve ser feito.
 
-## Pruning
+## Poda
 
-- Keep each meaning in a **single source of truth**: one authoritative place, so changing the behaviour is a one-place edit. **Duplication** — the same meaning in more than one place — costs maintenance and tokens, and inflates a meaning's prominence on the ladder past its real rank. (The accidental inverse of a leading word, which repeats a token on purpose, never the meaning.)
-- The **environment** is a source of truth too — `package.json` scripts, config files, the directory layout, `--help` output — and a document that restates it is a **cache**: a copy of a lookup, earning its load only when the lookup is expensive. Cache what the agent cannot find by looking: the unwritten convention, the reason behind a choice, the gotcha no config confesses. Leave the one-file, one-command lookups to the environment, where they cannot go stale.
-- Check every line for **relevance**: does it still bear on what the document does? A line loses relevance by never bearing on the task (mere exposition, or a branch that should be disclosed) or by going stale as the behaviour or world it describes changes. Shorter documents are easier to keep relevant. Without a pruning discipline the default fate is **sediment**: stale layers that settle because adding feels safe and removing feels risky, until you must core down through them to find what is still live.
-- Hunt **no-ops** sentence by sentence: an instruction the model already obeys by default pays load to say nothing. The test — does it change behaviour versus the default? — is model-relative, not reader-relative: two people disagreeing about a no-op disagree about the default, and settle it by running the document, not by debate. When a sentence fails, delete the whole sentence rather than trim words from it. The test also grades leading words: a word too weak to beat the default (_be thorough_ when the agent is already thorough-ish) is a no-op, and the fix is a stronger word (_relentless_), not a different technique.
+- Mantenha cada significado em uma **fonte única da verdade** (single source of truth): um local com autoridade, de modo que alterar o comportamento seja uma edição em um único lugar. **Duplicação** — o mesmo significado em mais de um lugar — custa manutenção e tokens, além de inflar o destaque de um significado na escala acima de seu nível real. (O inverso acidental de uma leading word, que repete um token de propósito, nunca o significado.)
+- O **ambiente** também é uma fonte da verdade — scripts de `package.json`, arquivos de configuração, o layout de diretórios, saídas de `--help` — e um documento que o reitera é um **cache**: uma cópia de uma consulta, justificando sua carga apenas quando a consulta for custosa. Faça cache daquilo que o agente não consegue encontrar olhando: a convenção não escrita, o motivo por trás de uma escolha, a pegadinha que nenhuma configuração confessa. Deixe as consultas de um arquivo e um comando para o ambiente, onde elas não ficam defasadas.
+- Verifique cada linha quanto à **relevância**: ela ainda afeta o que o documento faz? Uma linha perde relevância por nunca afetar a tarefa (mera exposição, ou uma ramificação que deveria ser revelada) ou por se tornar defasada conforme o comportamento ou o mundo que ela descreve mudam. Documentos mais curtos são mais fáceis de manter relevantes. Sem uma disciplina de poda, o destino padrão é a **sedimentação**: camadas defasadas que se acumulam porque adicionar parece seguro e remover parece arriscado, até que você precise perfurar através delas para encontrar o que ainda está ativo.
+- Cace **no-ops** frase por frase: uma instrução que o modelo já obedece por padrão consome carga para não dizer nada. O teste — ela altera o comportamento em relação ao padrão? — é relativo ao modelo, não ao leitor: duas pessoas discordando sobre um no-op estão discordando sobre o padrão, e resolvem isso executando o documento, não por debate. Quando uma frase falhar, delete a frase inteira em vez de aparar palavras dela. O teste também avalia leading words: uma palavra fraca demais para superar o padrão (_seja minucioso_ quando o agente já é razoavelmente minucioso) é um no-op, e a correção é uma palavra mais forte (_implacável_), não uma técnica diferente.

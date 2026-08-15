@@ -1,64 +1,64 @@
-# UI Prototype
+# Protótipo de Interface (UI)
 
-Generate **several radically different UI variations** on a single route, switchable from a floating bottom bar. The user flips between variants in the browser, picks one (or steals bits from each), then throws the rest away.
+Gere **várias variações de interface radicalmente diferentes** em uma única rota, alternáveis a partir de uma barra inferior flutuante. O usuário alterna entre as variantes no navegador, escolhe uma (ou aproveita partes de cada uma), e então descarta o restante.
 
-If the question is about logic/state rather than what something looks like — wrong branch. Use [LOGIC.md](LOGIC.md).
+Se a dúvida for sobre lógica/estado em vez de como algo deve parecer — caminho errado. Use [LOGIC.md](LOGIC.md).
 
-## When this is the right shape
+## Quando este é o formato correto
 
-- "What should this page look like?"
-- "I want to see a few options for this dashboard before committing."
-- "Try a different layout for the settings screen."
-- Any time the user would otherwise spend a day picking between three vague mockups in their head.
+- "Como esta página deve parecer?"
+- "Quero ver algumas opções para este painel antes de me comprometer."
+- "Experimente um layout diferente para a tela de configurações."
+- Qualquer momento em que o usuário, de outra forma, passaria um dia escolhendo entre três mockups vagos na cabeça dele.
 
-## Two sub-shapes — strongly prefer sub-shape A
+## Dois subformatos — prefira fortemente o subformato A
 
-A UI prototype is much easier to judge when it's **butting up against the rest of the app** — real header, real sidebar, real data, real density. A throwaway route on its own is a vacuum: every variant looks fine in isolation. Default to sub-shape A whenever there's a plausible existing page to host the variants. Only reach for sub-shape B if the prototype genuinely has no nearby home.
+Um protótipo de interface é muito mais fácil de julgar quando está **em contato direto com o restante do aplicativo** — cabeçalho real, barra lateral real, dados reais, densidade real. Uma rota descartável isolada é um vácuo: toda variante parece boa isoladamente. Adote por padrão o subformato A sempre que houver uma página existente plausível para hospedar as variantes. Só recorra ao subformato B se o protótipo genuinamente não tiver um lar por perto.
 
-### Sub-shape A — adjustment to an existing page (preferred)
+### Subformato A — ajuste em uma página existente (preferido)
 
-The route already exists. Variants are rendered **on the same route**, gated by a `?variant=` URL search param. The existing data fetching, params, and auth all stay — only the rendering swaps. This is the default; pick it unless there's a specific reason not to.
+A rota já existe. As variantes são renderizadas **na mesma rota**, controladas por um parâmetro de busca na URL `?variant=`. A busca de dados existente, parâmetros e autenticação permanecem — apenas a renderização é trocada. Este é o padrão; escolha-o a menos que haja um motivo específico para não fazê-lo.
 
-If the prototype is for something that doesn't yet have a page but *would naturally live inside one* (a new section of the dashboard, a new card on the settings screen, a new step in an existing flow) — that's still sub-shape A. Mount the variants inside the host page.
+Se o protótipo for para algo que ainda não tem uma página, mas que *naturalmente viveria dentro de uma* (uma nova seção do painel, um novo card na tela de configurações, uma nova etapa em um fluxo existente) — isso ainda é o subformato A. Monte as variantes dentro da página hospedeira.
 
-### Sub-shape B — a new page (last resort)
+### Subformato B — uma nova página (último recurso)
 
-Only use this when the thing being prototyped genuinely has no existing page to live inside — e.g. an entirely new top-level surface, or a flow that can't be embedded anywhere sensible.
+Use isto apenas quando o elemento que está sendo prototipado genuinamente não tiver uma página existente para habitar — por exemplo, uma superfície de nível raiz inteiramente nova, ou um fluxo que não possa ser embutido em nenhum lugar sensato.
 
-Create a **throwaway route** following whatever routing convention the project already uses — don't invent a new top-level structure. Name it so it's obviously a prototype (e.g. include the word `prototype` in the path or filename). Same `?variant=` pattern.
+Crie uma **rota descartável** seguindo a convenção de rotas que o projeto já utiliza — não invente uma nova estrutura no nível raiz. Nomeie-a para que fique óbvio que é um protótipo (por exemplo, inclua a palavra `prototype` no caminho ou nome do arquivo). O mesmo padrão `?variant=`.
 
-Before committing to sub-shape B, sanity-check: is there really no existing page this could be embedded in? An empty route hides design problems that a populated one would expose.
+Antes de se comprometer com o subformato B, faça uma checagem de sanidade: realmente não há nenhuma página existente onde isso possa ser embutido? Uma rota vazia esconde problemas de design que uma rota populada exporia.
 
-In both sub-shapes the floating bottom bar is identical.
+Em ambos os subformatos, a barra inferior flutuante é idêntica.
 
-## Process
+## Processo
 
-### 1. State the question and pick N
+### 1. Declare a dúvida e escolha N
 
-Default to **3 variants**. More than 5 stops being radically different and starts being noise — cap there.
+Adote por padrão **3 variantes**. Mais de 5 deixa de ser radicalmente diferente e passa a ser ruído — limite-se a isso.
 
-Write down the plan in one line, in the prototype's location or a top-of-file comment:
+Anote o plano em uma linha, no local do protótipo ou em um comentário no topo do arquivo:
 
-> "Three variants of the settings page, switchable via `?variant=`, on the existing `/settings` route."
+> "Três variantes da página de configurações, alternáveis via `?variant=`, na rota existente `/settings`."
 
-This works whether the user is here to push back or not.
+Isso funciona quer o usuário esteja presente para opinar ou não.
 
-### 2. Generate radically different variants
+### 2. Gere variantes radicalmente diferentes
 
-Draft each variant. Hold each one to:
+Esboce cada variante. Submeta cada uma a:
 
-- The page's purpose and the data it has access to.
-- The project's component library / styling system (TailwindCSS, shadcn, MUI, plain CSS, whatever).
-- A clear exported component name, e.g. `VariantA`, `VariantB`, `VariantC`.
+- O propósito da página e os dados aos quais ela tem acesso.
+- A biblioteca de componentes / sistema de estilos do projeto (TailwindCSS, shadcn, MUI, CSS puro, ou o que for).
+- Um nome claro de componente exportado, por exemplo, `VariantA`, `VariantB`, `VariantC`.
 
-Variants must be **structurally different** — different layout, different information hierarchy, different primary affordance, not just different colours. Three slightly-tweaked card grids isn't a UI prototype, it's wallpaper. If two drafts come out too similar, redo one with explicit "do not use a card grid" guidance.
+As variantes devem ser **estruturalmente diferentes** — layout diferente, hierarquia de informações diferente, elemento de ação principal diferente, não apenas cores diferentes. Três grades de cards com pequenos ajustes não formam um protótipo de interface, formam papel de parede. Se dois rascunhos ficarem muito parecidos, refaça um com a orientação explícita "não use grade de cards".
 
-### 3. Wire them together
+### 3. Conecte-as
 
-Create a single switcher component on the route:
+Crie um único componente alternador na rota:
 
 ```tsx
-// pseudo-code — adapt to the project's framework
+// pseudocódigo — adapte ao framework do projeto
 const variant = searchParams.get('variant') ?? 'A';
 return (
   <>
@@ -70,43 +70,43 @@ return (
 );
 ```
 
-For sub-shape A (existing page): keep all the existing data fetching above the switcher; only the rendered subtree changes per variant.
+Para o subformato A (página existente): mantenha toda a busca de dados existente acima do alternador; apenas a subárvore renderizada muda por variante.
 
-For sub-shape B (new page): the throwaway route under `/prototype/<name>` mounts the same switcher.
+Para o subformato B (nova página): a rota descartável sob `/prototype/<nome>` monta o mesmo alternador.
 
-### 4. Build the floating switcher
+### 4. Construa o alternador flutuante
 
-A small fixed-position bar at the bottom-centre of the screen with three pieces:
+Uma pequena barra de posição fixa na parte inferior central da tela com três partes:
 
-- **Left arrow** — cycles to the previous variant (wraps around).
-- **Variant label** — shows the current variant key and, if the variant exports a name, that name too. e.g. `B — Sidebar layout`.
-- **Right arrow** — cycles forward (wraps around).
+- **Seta para a esquerda** — navega para a variante anterior (com rotação circular).
+- **Rótulo da variante** — mostra a chave da variante atual e, se a variante exportar um nome, esse nome também. Exemplo: `B — Layout com barra lateral`.
+- **Seta para a direita** — navega para a próxima (com rotação circular).
 
-Behaviour:
+Comportamento:
 
-- Clicking an arrow updates the URL search param (use the framework's router — `router.replace` on Next, `navigate` on React Router, etc) so the variant is shareable and reload-stable.
-- Keyboard: `←` and `→` arrow keys also cycle. Don't intercept arrow keys when an `<input>`, `<textarea>`, or `[contenteditable]` is focused.
-- Visually distinct from the page (e.g. high-contrast pill, subtle shadow) so it's obviously not part of the design being evaluated.
-- Hidden in production builds — gate on `process.env.NODE_ENV !== 'production'` or an equivalent check, so a stray prototype merge can't ship the bar to users.
+- Clicar em uma seta atualiza o parâmetro de busca da URL (use o roteador do framework — `router.replace` no Next, `navigate` no React Router, etc.) para que a variante seja compartilhável e estável ao recarregar.
+- Teclado: as teclas de seta `←` e `→` também alternam. Não intercepte as teclas de seta quando um `<input>`, `<textarea>` ou elemento com `[contenteditable]` estiver focado.
+- Visualmente distinto da página (por exemplo, um formato de pílula em alto contraste, sombra suave) para que fique óbvio que não faz parte do design em avaliação.
+- Oculto em builds de produção — controle via `process.env.NODE_ENV !== 'production'` ou checagem equivalente, para que um merge acidental do protótipo não envie a barra para os usuários.
 
-Put the switcher in a single shared component so both sub-shapes can reuse it. Locate it wherever shared UI lives in the project.
+Coloque o alternador em um único componente compartilhado para que ambos os subformatos possam reutilizá-lo. Posicione-o onde quer que os componentes compartilhados de interface fiquem no projeto.
 
-### 5. Hand it over
+### 5. Entregue-o
 
-Surface the URL (and the `?variant=` keys). The user will flip through whenever they get to it. The interesting feedback is usually **"I want the header from B with the sidebar from C"** — that's the actual design they want.
+Apresente a URL (e as chaves de `?variant=`). O usuário navegará por elas quando puder. O feedback interessante costuma ser **"quero o cabeçalho da B com a barra lateral da C"** — esse é o design real que ele deseja.
 
-### 6. Capture the answer and clean up
+### 6. Capture a resposta e faça a limpeza
 
-Once a variant has won, capture the answer — which variant and why — then capture the prototype the way the [SKILL](SKILL.md) describes. Fold the winner into the real code and move the rest onto the throwaway branch, not into main:
+Assim que uma variante vencer, capture a resposta — qual variante e por quê — depois capture o protótipo da forma descrita na [SKILL](SKILL.md). Incorpore a vencedora ao código real e mova o restante para a branch descartável, não para a main:
 
-- **Sub-shape A** — fold the winner into the existing page; drop the losing variants and the switcher from main.
-- **Sub-shape B** — promote the winning variant to a real route; drop the throwaway route and the switcher from main.
+- **Subformato A** — incorpore a vencedora à página existente; remova da main as variantes derrotadas e o alternador.
+- **Subformato B** — promova a variante vencedora a uma rota real; remova da main a rota descartável e o alternador.
 
-The full set of variants is the primary source, so it lands on the throwaway branch, not the bin — variant components and the switcher left in the main branch rot fast and confuse the next reader.
+O conjunto completo de variantes é a fonte primária, portanto ele vai para a branch descartável, não para a lixeira — componentes de variantes e o alternador esquecidos na branch main apodrecem rápido e confundem o próximo leitor.
 
-## Anti-patterns
+## Antipadrões
 
-- **Variants that differ only in colour or copy.** That's a tweak, not a prototype. Real variants disagree about structure.
-- **Sharing too much code between variants.** A shared `<Header>` is fine; a shared `<Layout>` defeats the point. Each variant should be free to throw out the layout.
-- **Wiring variants to real mutations.** Read-only prototypes are fine. If a variant needs to mutate, point it at a stub — the question is "what should this look like", not "does the backend work".
-- **Promoting the prototype directly to production.** The variant code was written under prototype constraints (no tests, minimal error handling). Rewrite it properly when you fold it in.
+- **Variantes que diferem apenas na cor ou no texto.** Isso é um ajuste fino, não um protótipo. Variantes reais divergem na estrutura.
+- **Compartilhar código em excesso entre as variantes.** Um `<Header>` compartilhado é ótimo; um `<Layout>` compartilhado destrói o propósito. Cada variante deve ser livre para descartar o layout.
+- **Conectar variantes a mutações reais.** Protótipos somente leitura são excelentes. Se uma variante precisar sofrer mutação, aponte para um stub — a dúvida é "como isso deve parecer", não "o backend funciona".
+- **Promover o protótipo diretamente para produção.** O código da variante foi escrito sob restrições de protótipo (sem testes, tratamento mínimo de erros). Reescreva-o adequadamente ao incorporá-lo.

@@ -1,35 +1,35 @@
-# GLOSSARY.md Format
+# Formato de GLOSSARY.md
 
-`GLOSSARY.md` is the canonical language for this teaching workspace. All explainers, exercises, and learning records should adhere to its terminology. Building it is itself part of learning: compressing a concept into a tight definition is evidence the user understands it.
+`GLOSSARY.md` é a linguagem canônica para este workspace de ensino. Todas as explicações, exercícios e registros de aprendizado devem aderir à sua terminologia. Construí-lo é, por si só, parte do aprendizado: condensar um conceito em uma definição concisa e precisa é evidência de que o usuário o compreendeu.
 
-## Structure
+## Estrutura
 
 ```md
-# {Topic} Glossary
+# Glossário de {Tópico}
 
-{One or two sentence description of the topic this glossary covers.}
+{Descrição de uma ou duas frases sobre o tópico que este glossário aborda.}
 
-## Terms
+## Termos
 
-**Hypertrophy**:
-Muscle growth driven by mechanical tension and metabolic stress over repeated training sessions.
-_Avoid_: Bulking, getting big
+**Hipertrofia**:
+Crescimento muscular impulsionado por tensão mecânica e estresse metabólico ao longo de sessões repetidas de treino.
+_Evitar_: Bulking, ficar grande
 
-**Progressive overload**:
-Systematically increasing the demand on a muscle over time — via load, volume, or intensity.
-_Avoid_: Pushing harder, levelling up
+**Sobrecarga progressiva**:
+Aumento sistemático da exigência sobre um músculo ao longo do tempo — via carga, volume ou intensidade.
+_Evitar_: Pegar mais pesado, subir de nível
 
-**RPE (Rate of Perceived Exertion)**:
-A 1–10 self-rating of how hard a set felt, where 10 is failure and 8 means two reps left in the tank.
-_Avoid_: Effort score, intensity rating
+**RPE (Escala de Percepção de Esforço)**:
+Uma autoavaliação de 1–10 de quão difícil foi uma série, onde 10 é a falha e 8 significa duas repetições restantes na reserva.
+_Evitar_: Pontuação de esforço, classificação de intensidade
 ```
 
-## Rules
+## Regras
 
-- **Add a term only when the user understands it.** The glossary is a record of compressed knowledge, not a dictionary the user reads to learn. If the user has just been introduced to a concept, wait until they can use it correctly before promoting it here.
-- **Be opinionated.** When several words exist for the same concept, pick the best one and list the rest as aliases to avoid. This is how language compresses.
-- **Keep definitions tight.** One or two sentences. Define what the term IS, not what it does or how to do it.
-- **Use the glossary's own terms inside definitions.** Once a term is in the glossary, prefer it everywhere — including inside other definitions. This is what makes complex terms easier to grasp later.
-- **Group under subheadings** when natural clusters emerge (e.g. `## Anatomy`, `## Programming`). A flat list is fine when terms cohere.
-- **Flag ambiguities explicitly.** If a term is used loosely in the wider field, note the resolution: "In this workspace, 'set' always means a working set — warm-ups are tracked separately."
-- **Revise as understanding deepens.** A definition the user wrote in week one may be wrong by week six. Update in place; do not leave stale entries.
+- **Adicione um termo apenas quando o usuário o compreender.** O glossário é um registro de conhecimento condensado, não um dicionário que o usuário lê para aprender. Se o usuário acabou de ser apresentado a um conceito, aguarde até que ele consiga usá-lo corretamente antes de promovê-lo para cá.
+- **Seja criterioso e assertivo.** Quando existirem várias palavras para o mesmo conceito, escolha a melhor e liste as restantes como sinônimos a evitar. É assim que a linguagem se condensa.
+- **Mantenha as definições concisas e precisas.** Uma ou duas frases. Defina o que o termo É, não o que ele faz ou como realizá-lo.
+- **Use os próprios termos do glossário dentro das definições.** Uma vez que um termo esteja no glossário, dê preferência a ele em todos os lugares — inclusive dentro de outras definições. É isso que facilita a assimilação de termos complexos mais adiante.
+- **Agrupe sob subtítulos** quando surgirem blocos naturais (ex.: `## Anatomia`, `## Programação`). Uma lista linear é adequada quando os termos forem coerentes entre si.
+- **Sinalize ambiguidades explicitamente.** Se um termo for usado de forma vaga na área em geral, registre a resolução: "Neste workspace, 'série' significa sempre uma série válida de trabalho — aquecimentos são monitorados separadamente."
+- **Revise à medida que o entendimento se aprofunda.** Uma definição que o usuário escreveu na primeira semana pode estar inadequada na sexta semana. Atualize no próprio arquivo; não deixe entradas defasadas.

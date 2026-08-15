@@ -1,15 +1,15 @@
-# Triage Labels
+# Labels de Triagem (Triage Labels)
 
-The skills speak in terms of five canonical triage roles. This file maps those roles to the actual label strings used in this repo's issue tracker.
+As skills comunicam-se em termos de cinco papéis canônicos de triagem. Este arquivo mapeia esses papéis para as strings reais de label usadas no issue tracker deste repo.
 
-| Label in mattpocock/skills | Label in our tracker | Meaning                                  |
-| -------------------------- | -------------------- | ---------------------------------------- |
-| `needs-triage`             | `needs-triage`       | Maintainer needs to evaluate this issue  |
-| `needs-info`               | `needs-info`         | Waiting on reporter for more information |
-| `ready-for-agent`          | `ready-for-agent`    | Fully specified, ready for an AFK agent  |
-| `ready-for-human`          | `ready-for-human`    | Requires human implementation            |
-| `wontfix`                  | `wontfix`            | Will not be actioned                     |
+| Label em mattpocock/skills | Label em nosso tracker | Significado                              |
+| -------------------------- | ---------------------- | ---------------------------------------- |
+| `needs-triage`             | `needs-triage`         | O mantenedor precisa avaliar esta issue  |
+| `needs-info`               | `needs-info`           | Aguardando mais informações do relator   |
+| `ready-for-agent`          | `ready-for-agent`      | Totalmente especificado, pronto para AFK |
+| `ready-for-human`          | `ready-for-human`      | Requer implementação humana             |
+| `wontfix`                  | `wontfix`              | Não será executado                       |
 
-When a skill mentions a role (e.g. "apply the AFK-ready triage label"), use the corresponding label string from this table.
+Quando uma skill mencionar um papel (ex.: "aplique a label de triagem pronta para AFK"), use a string de label correspondente desta tabela.
 
-Edit the right-hand column to match whatever vocabulary you actually use.
+Edite a coluna da direita para corresponder a qualquer vocabulário que você realmente utilize.

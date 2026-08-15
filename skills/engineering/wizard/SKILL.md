@@ -1,44 +1,44 @@
 ---
 name: wizard
-description: Generate an interactive bash wizard that walks a human through steps only they can perform. Use when provisioning infrastructure, setting up credentials or CI secrets, walking an unfamiliar third-party dashboard, or running a one-off migration or cutover. Don't invoke this for steps the agent can perform itself.
+description: Gere um assistente interativo em bash que guia um humano pelas etapas que apenas ele pode executar. Use ao provisionar infraestrutura, configurar credenciais ou segredos de CI, navegar por um painel de terceiros desconhecido ou executar uma migração ou transição pontual. Não invoque isto para etapas que o próprio agente pode executar.
 ---
 
 # Wizard
 
-A **wizard** is a bash script that walks a human, step by step, through a manual procedure that's tedious to do by hand and tedious to re-explain to an AI every time. It opens each URL, says exactly what to click and copy, captures the values, writes them where they belong (`.env`, GitHub secrets), confirms at every stage, and shows how many stages are left. It might configure third-party services, run a one-off migration, or move the project from one state to another.
+Um **wizard** é um script em bash que guia um humano, passo a passo, por um procedimento manual cansativo de fazer à mão e cansativo de reexplicar a uma IA toda vez. Ele abre cada URL, diz exatamente o que clicar e copiar, captura os valores, grava-os onde pertencem (`.env`, secrets do GitHub), pede confirmação em cada etapa e mostra quantas etapas restam. Ele pode configurar serviços de terceiros, rodar uma migração pontual ou mudar o projeto de um estado para outro.
 
-The delightful UX is already solved by [template.sh](template.sh) — stage-by-stage progress, confirmation gates, cross-platform URL opening (including WSL), hidden secret entry, idempotent `.env` upserts, `gh secret`/`gh variable` writes, and a closing summary. **Your job is only to scope the procedure and author its stages.** The library above the `STAGES` marker is identical in every wizard; that consistency is the point — never hand-edit it.
+A experiência de uso elegante já está resolvida pelo [template.sh](template.sh) — progresso etapa por etapa, travas de confirmação, abertura de URL multiplataforma (incluindo WSL), inserção oculta de segredos, upserts idempotentes em `.env`, gravação via `gh secret`/`gh variable` e um resumo de encerramento. **Seu trabalho é apenas delimitar o escopo do procedimento e escrever suas etapas.** A biblioteca acima do marcador `STAGES` é idêntica em todo wizard; essa consistência é o objetivo — nunca a edite manualmente.
 
-A wizard is ephemeral by default — built for one run, saved to a scratch or `scripts/` path, deleted when the job's done. Commit it only when the user wants a repeatable setup path that should live in the repo.
+Um wizard é efêmero por padrão — criado para uma única execução, salvo em um diretório temporário (scratch) ou em `scripts/`, e excluído quando o trabalho termina. Faça commit dele apenas quando o usuário desejar um fluxo de configuração repetível que deva residir no repositório.
 
-## Process
+## Processo
 
-### 1. Scope the procedure
+### 1. Delimitar o escopo do procedimento
 
-Work out every manual step the human must take and every value that gets captured along the way. Read the repo first — don't ask cold:
+Mapeie cada passo manual que o humano precisa realizar e cada valor que deve ser capturado ao longo do caminho. Leia o repositório primeiro — não faça perguntas sem contexto:
 
-- For setup: `.env`, `.env.example`, `.env.*`, `README`, `docker-compose*`, framework config, and `.github/workflows/*` (every `secrets.*` / `vars.*` reference is a value the wizard must produce).
-- For a migration or transition: the current state, the target state, and the irreversible actions between them.
+- Para configuração (setup): `.env`, `.env.example`, `.env.*`, `README`, `docker-compose*`, configurações do framework e `.github/workflows/*` (toda referência a `secrets.*` / `vars.*` é um valor que o wizard precisa produzir).
+- Para uma migração ou transição: o estado atual, o estado alvo e as ações irreversíveis entre eles.
 
-Then show the user the ordered list of stages and the values each produces, and confirm — they may add, drop, or reorder.
+Em seguida, mostre ao usuário a lista ordenada de etapas e os valores que cada uma produz, e confirme — ele pode adicionar, remover ou reordenar.
 
-**Done when:** every stage is named in order, and for each captured value you know (a) where the human gets it, (b) where it's written (`.env`, a GitHub secret, both, or nowhere — some stages are pure actions), and (c) whether it's secret (hidden entry) or public.
+**Concluído quando:** cada etapa estiver nomeada em ordem, e para cada valor capturado você souber (a) de onde o humano o obtém, (b) onde ele é gravado (`.env`, um secret do GitHub, ambos ou em nenhum lugar — algumas etapas são puramente ações) e (c) se é secreto (entrada oculta) ou público.
 
-### 2. Map each stage's journey
+### 2. Mapear a jornada de cada etapa
 
-For each stage, write the precise path a human follows: which URL to open, what to do there, where a value is shown, which variable it fills — e.g. "Dashboard → Developers → API keys → Reveal test key → copy". Where you don't actually know the current UI or the exact command, say so and ask the user or check the docs — never invent steps that may not exist.
+Para cada etapa, escreva o caminho exato que o humano segue: qual URL abrir, o que fazer lá, onde o valor é exibido, qual variável ele preenche — ex.: "Dashboard → Desenvolvedores → Chaves de API → Revelar chave de teste → copiar". Quando você não souber a interface atual real ou o comando exato, diga isso e pergunte ao usuário ou consulte a documentação — nunca invente passos que possam não existir.
 
-**Done when:** every stage traces to concrete instructions a stranger could follow.
+**Concluído quando:** cada etapa puder ser rastreada até instruções concretas que qualquer pessoa conseguiria seguir.
 
-### 3. Author the wizard
+### 3. Escrever o wizard
 
-Copy `template.sh` to the target path. Replace the example stage with one `stage` per step, in dependency order. Use the library helpers — `stage`, `say`/`step`, `open_url`, `ask`/`ask_secret`, `write_env`, `set_secret`/`set_var`, `pause`/`confirm` — and set `TOTAL_STAGES` to the number of stages you wrote.
+Copie `template.sh` para o caminho de destino. Substitua a etapa de exemplo por um `stage` por passo, em ordem de dependência. Use os auxiliares da biblioteca — `stage`, `say`/`step`, `open_url`, `ask`/`ask_secret`, `write_env`, `set_secret`/`set_var`, `pause`/`confirm` — e defina `TOTAL_STAGES` com o número de etapas escritas.
 
-Hold the bar the template sets: open the URL before asking for its value, use `ask_secret` for anything secret, `write_env` every persisted value, `set_secret` only the values CI actually needs, and `confirm` before any irreversible action. Each `stage` clears the screen so only the current step is visible — keep a stage to one focused task so nothing the human needs scrolls away. Don't touch the library above the marker.
+Mantenha o padrão de qualidade definido pelo modelo: abra a URL antes de pedir o valor, use `ask_secret` para qualquer dado confidencial, use `write_env` em todo valor persistido, use `set_secret` apenas nos valores de que o CI realmente precisa e use `confirm` antes de qualquer ação irreversível. Cada `stage` limpa a tela para que apenas o passo atual fique visível — mantenha cada etapa restrita a uma tarefa focada para que nada do que o humano precisa saia da tela por rolagem. Não mexa na biblioteca acima do marcador.
 
-### 4. Verify and hand off
+### 4. Verificar e entregar
 
-- `bash -n <script>`; run `shellcheck` if available.
+- `bash -n <script>`; execute `shellcheck` se disponível.
 - `chmod +x <script>`.
-- Don't run it end-to-end yourself — it opens browsers and blocks on human input. Trace it statically instead: every value from step 1 is captured and lands where step 1 said, and every `set_secret` name exactly matches a `secrets.*` reference in CI.
-- Tell the user how to run it. If it's a repeatable setup path, commit it and link it from the README so the next person runs the script instead of asking an AI.
+- Não o execute de ponta a ponta você mesmo — ele abre navegadores e aguarda entradas humanas. Em vez disso, faça o rastreamento estático: certifique-se de que cada valor do passo 1 é capturado e gravado onde o passo 1 definiu, e que cada nome de `set_secret` corresponde exatamente a uma referência `secrets.*` no CI.
+- Diga ao usuário como executá-lo. Se for um caminho de configuração repetível, faça o commit e crie um link no README para que a próxima pessoa execute o script em vez de perguntar a uma IA.

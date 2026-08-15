@@ -1,55 +1,55 @@
-# Phase boundaries
+# Divisas de fase
 
-A **phase** is a chunk of work inside a session — the grilling, the implementation, the QA. The definition is fuzzy on purpose: a phase ends when you think *"ok, we're done with that"*.
+Uma **fase** é um bloco de trabalho dentro de uma sessão — a sabatina, a implementação, o QA. A definição é propositalmente flexível: uma fase termina quando você pensa *"ok, terminamos isso"*.
 
-The **phase boundary** is the gap between two phases, and it is the only place this decision belongs. Mid-phase there is no decision to make — continue, or split the work that's left into subagents. Compacting mid-phase makes the agent lose the thread.
+A **divisa de fase** é o intervalo entre duas fases, e é o único lugar ao qual esta decisão pertence. No meio da fase não há decisão a tomar — continue, ou divida o trabalho restante em subagentes. Fazer compact no meio da fase faz o agente perder o fio da meada.
 
-## The five options
+## As cinco opções
 
-| Option       | What it does                                                    |
+| Opção        | O que faz                                                       |
 | ------------ | --------------------------------------------------------------- |
-| **Continue** | Stay in the session. No context switch at all.                    |
-| **`/clear`** | Empty the context window and start from nothing.                  |
-| **`/handoff`** | Write a portable markdown file and seed a session anywhere with it. |
-| **Subagent** | Send the task to its own context window and get a report back.     |
-| **`/compact`** | Compress this context and seed a fresh session with the summary.  |
+| **Continuar** | Ficar na sessão. Nenhuma troca de contexto.                     |
+| **`/clear`** | Esvaziar a janela de contexto e começar do zero.                |
+| **`/handoff`** | Escrever um arquivo markdown portátil e iniciar uma sessão em qualquer lugar com ele. |
+| **Subagente** | Enviar a tarefa para sua própria janela de contexto e receber um relatório de volta. |
+| **`/compact`** | Comprimir este contexto e iniciar uma nova sessão com o resumo. |
 
-## The tree
+## A árvore
 
-Work top to bottom at the boundary. The first **yes** wins.
+Trabalhe de cima para baixo na divisa. O primeiro **sim** vence.
 
-**1. Can you continue in this session?** Two things make the answer yes: the next phase needs this phase as a **primary source**, or you have enough [smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone) left (~150k tokens) for the next phase to fit. Grilling → implementation is the standard yes: the implementation wants the reasoning verbatim, not a summary of it. Continue costs nothing and loses nothing, so rule it out before anything else.
+**1. Você pode continuar nesta sessão?** Duas coisas tornam a resposta sim: a próxima fase precisa desta fase como uma **fonte primária**, ou você tem [smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone) restante suficiente (~150k tokens) para a próxima fase caber. Sabatina → implementação é o sim padrão: a implementação quer o raciocínio textual (verbatim), não um resumo dele. Continuar não custa nada e não perde nada, portanto descarte essa opção antes de qualquer outra.
 
-**2. Is the context irrelevant to what comes next?** Is everything in this session — the exploration, the decisions, the dead ends — disposable? If so, **`/clear`**. It is the cheapest move on the board: it takes no time and hands back the whole window. `/clear` also isn't terminal — the old session stays resumable.
+**2. O contexto é irrelevante para o que vem a seguir?** Tudo nesta sessão — a exploração, as decisões, os becos sem saída — é descartável? Se sim, **`/clear`**. É o movimento mais barato do tabuleiro: não leva tempo nenhum e devolve a janela inteira. O `/clear` também não é terminal — a sessão antiga continua podendo ser retomada.
 
-The cost of getting this wrong is one-way. Clear a *relevant* context and you lose the **why** behind what you built, and no amount of reading the diff back gets it returned.
+O custo de errar aqui é de mão única. Limpar um contexto *relevante* faz você perder o **porquê** por trás do que construiu, e nenhuma releitura do diff trará isso de volta.
 
-**3. Do you need to hand off?** `/handoff` is narrow. You need it only when you are:
+**3. Você precisa passar o bastão (hand off)?** O `/handoff` é restrito. Você só precisa dele quando estiver:
 
-- swapping to a **new harness** (Claude → Codex),
-- moving to a **new directory** or repo,
-- sending the work to a **colleague**,
-- or forking a side task you found **mid-phase** without derailing what you're doing.
+- trocando para um **novo harness** (Claude → Codex),
+- mudando para um **novo diretório** ou repositório,
+- enviando o trabalho para um **colega**,
+- ou bifurcando uma tarefa secundária encontrada **no meio da fase** sem descarrilar o que você está fazendo.
 
-That list is the whole clause. What `/handoff` buys is **portability** — a file that travels. If nothing is travelling, you don't need it.
+Essa lista é a cláusula inteira. O que o `/handoff` oferece é **portabilidade** — um arquivo que viaja. Se nada está viajando, você não precisa dele.
 
-**4. Can the task be done AFK?** Is it scoped tightly enough to run with you away from the keyboard, no steering? Then send it to a **subagent** and leave this session untouched. Automated review is the standard case: the agent reads the diff and reports, and you aren't needed while it does.
+**4. A tarefa pode ser feita AFK?** O escopo está delimitado com precisão suficiente para rodar com você longe do teclado, sem direcionamento? Então envie-a para um **subagente** e deixe esta sessão intacta. A revisão automatizada é o caso padrão: o agente lê o diff e reporta, e você não é necessário enquanto ele faz isso.
 
-**5. Otherwise, `/compact`.** Relevant context, same harness, same directory, and you need to stay in the loop — this is where the tree lands, and it lands here often. Pass it an instruction (`/compact we're going to QA this area`) so the summary keeps what the next phase needs.
+**5. Caso contrário, `/compact`.** Contexto relevante, mesmo harness, mesmo diretório, e você precisa permanecer no circuito (in the loop) — é aqui que a árvore cai, e ela cai aqui com frequência. Passe uma instrução (`/compact vamos fazer QA desta área`) para que o resumo mantenha o que a próxima fase precisa.
 
-`/compact` is the **default, not the first reach**. It sits at the bottom because the four questions above it are all cheaper or more precise. The failure mode when people start here is a fresh session that is confidently wrong about a decision the summary flattened.
+O `/compact` é o **padrão, não a primeira escolha**. Ele fica na base porque as quatro perguntas acima dele são todas mais baratas ou mais precisas. O modo de falha quando as pessoas começam por aqui é uma nova sessão confiantemente errada sobre uma decisão que o resumo achatou.
 
-## Primary and secondary sources
+## Fontes primárias e secundárias
 
-Every move except **Continue** turns a **primary source** into a **secondary source** — the session as it happened, replaced by a summary of it. The trade is always the same shape:
+Todo movimento, exceto **Continuar**, transforma uma **fonte primária** em uma **fonte secundária** — a sessão como ela aconteceu, substituída por um resumo dela. A troca tem sempre o mesmo formato:
 
-| Source                            | Information | Noise | Room to move |
-| --------------------------------- | ----------- | ----- | ------------ |
-| Primary (Continue)                | Full        | Lots  | Little       |
-| Secondary (`/compact`, `/handoff`) | Lossy       | Less  | Lots         |
+| Fonte                             | Informação  | Ruído | Espaço para manobra |
+| --------------------------------- | ----------- | ----- | ------------------- |
+| Primária (Continuar)              | Completa    | Muito | Pouco               |
+| Secundária (`/compact`, `/handoff`) | Com perdas  | Menos | Muito               |
 
-This is why question 1 comes first. You only pay the lossiness when staying costs more than it saves.
+É por isso que a pergunta 1 vem primeiro. Você só paga pelas perdas quando permanecer custa mais do que economiza.
 
-## These are judgement calls
+## Estas são decisões de julgamento
 
-The questions are not objective — each has taste in it, and the same boundary can go two ways on two days. The value is in asking them **in order**, at the boundary rather than in the middle of the work.
+As perguntas não são objetivas — cada uma envolve discernimento subjetivo, e a mesma divisa pode seguir caminhos diferentes em dias diferentes. O valor está em fazê-las **em ordem**, na divisa em vez de no meio do trabalho.

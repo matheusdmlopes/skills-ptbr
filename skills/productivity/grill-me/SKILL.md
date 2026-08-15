@@ -1,7 +1,7 @@
 ---
 name: grill-me
-description: A relentless interview to sharpen a plan or design.
+description: Uma sabatina implacável para refinar um plano ou design.
 disable-model-invocation: true
 ---
 
-Run a `/grilling` session.
+Execute uma sessão de `/grilling`.

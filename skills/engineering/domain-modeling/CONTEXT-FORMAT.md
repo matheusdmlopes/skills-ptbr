@@ -1,60 +1,60 @@
-# CONTEXT.md Format
+# Formato de CONTEXT.md
 
-## Structure
+## Estrutura
 
 ```md
-# {Context Name}
+# {Nome do Contexto}
 
-{One or two sentence description of what this context is and why it exists.}
+{Descrição de uma ou duas frases sobre o que é este contexto e por que ele existe.}
 
-## Language
+## Linguagem
 
 **Order**:
-{A one or two sentence description of the term}
-_Avoid_: Purchase, transaction
+{Uma descrição de uma ou duas frases do termo}
+_Evitar_: Purchase, transaction
 
 **Invoice**:
-A request for payment sent to a customer after delivery.
-_Avoid_: Bill, payment request
+Uma solicitação de pagamento enviada a um cliente após a entrega.
+_Evitar_: Bill, payment request
 
 **Customer**:
-A person or organization that places orders.
-_Avoid_: Client, buyer, account
+Uma pessoa ou organização que faz pedidos.
+_Evitar_: Client, buyer, account
 ```
 
-## Rules
+## Regras
 
-- **Be opinionated.** When multiple words exist for the same concept, pick the best one and list the others under `_Avoid_`.
-- **Keep definitions tight.** One or two sentences max. Define what it IS, not what it does.
-- **Only include terms specific to this project's context.** General programming concepts (timeouts, error types, utility patterns) don't belong even if the project uses them extensively. Before adding a term, ask: is this a concept unique to this context, or a general programming concept? Only the former belongs.
-- **Group terms under subheadings** when natural clusters emerge. If all terms belong to a single cohesive area, a flat list is fine.
+- **Seja opinativo.** Quando existirem várias palavras para o mesmo conceito, escolha a melhor e liste as outras sob `_Evitar_`.
+- **Mantenha as definições concisas.** No máximo uma ou duas frases. Defina o que ele É, não o que ele faz.
+- **Inclua apenas termos específicos ao contexto deste projeto.** Conceitos gerais de programação (timeouts, tipos de erro, padrões utilitários) não pertencem aqui, mesmo se o projeto os usar extensivamente. Antes de adicionar um termo, pergunte: este é um conceito exclusivo deste contexto ou um conceito geral de programação? Apenas o primeiro pertence aqui.
+- **Agrupe termos sob subtítulos** quando surgirem agrupamentos naturais. Se todos os termos pertencerem a uma única área coesa, uma lista simples é suficiente.
 
-## Single vs multi-context repos
+## Repositórios de contexto único vs múltiplos contextos
 
-**Single context (most repos):** One `CONTEXT.md` at the repo root.
+**Contexto único (maioria dos repositórios):** Um `CONTEXT.md` na raiz do repositório.
 
-**Multiple contexts:** A `CONTEXT-MAP.md` at the repo root lists the contexts, where they live, and how they relate to each other:
+**Múltiplos contextos:** Um `CONTEXT-MAP.md` na raiz do repositório lista os contextos, onde residem e como se relacionam entre si:
 
 ```md
 # Context Map
 
 ## Contexts
 
-- [Ordering](./src/ordering/CONTEXT.md) — receives and tracks customer orders
-- [Billing](./src/billing/CONTEXT.md) — generates invoices and processes payments
-- [Fulfillment](./src/fulfillment/CONTEXT.md) — manages warehouse picking and shipping
+- [Ordering](./src/ordering/CONTEXT.md) — recebe e rastreia pedidos de clientes
+- [Billing](./src/billing/CONTEXT.md) — gera faturas e processa pagamentos
+- [Fulfillment](./src/fulfillment/CONTEXT.md) — gerencia a separação e o envio no armazém
 
 ## Relationships
 
-- **Ordering → Fulfillment**: Ordering emits `OrderPlaced` events; Fulfillment consumes them to start picking
-- **Fulfillment → Billing**: Fulfillment emits `ShipmentDispatched` events; Billing consumes them to generate invoices
-- **Ordering ↔ Billing**: Shared types for `CustomerId` and `Money`
+- **Ordering → Fulfillment**: Ordering emite eventos `OrderPlaced`; Fulfillment os consome para iniciar a separação
+- **Fulfillment → Billing**: Fulfillment emite eventos `ShipmentDispatched`; Billing os consome para gerar faturas
+- **Ordering ↔ Billing**: Tipos compartilhados para `CustomerId` e `Money`
 ```
 
-The skill infers which structure applies:
+A skill deduz qual estrutura se aplica:
 
-- If `CONTEXT-MAP.md` exists, read it to find contexts
-- If only a root `CONTEXT.md` exists, single context
-- If neither exists, create a root `CONTEXT.md` lazily when the first term is resolved
+- Se `CONTEXT-MAP.md` existir, leia-o para encontrar os contextos
+- Se apenas um `CONTEXT.md` na raiz existir, contexto único
+- Se nenhum dos dois existir, crie um `CONTEXT.md` na raiz sob demanda (lazily) quando o primeiro termo for resolvido
 
-When multiple contexts exist, infer which one the current topic relates to. If unclear, ask.
+Quando existirem múltiplos contextos, deduza a qual deles o tópico atual se relaciona. Se não estiver claro, pergunte.

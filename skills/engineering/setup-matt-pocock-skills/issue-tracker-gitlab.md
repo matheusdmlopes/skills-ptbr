@@ -1,46 +1,46 @@
 # Issue tracker: GitLab
 
-Issues and specs for this repo live as GitLab issues. Use the [`glab`](https://gitlab.com/gitlab-org/cli) CLI for all operations.
+Issues e specs para este repo vivem como issues do GitLab. Use a CLI [`glab`](https://gitlab.com/gitlab-org/cli) para todas as operações.
 
-## Conventions
+## Convenções
 
-- **Create an issue**: `glab issue create --title "..." --description "..."`. Use a heredoc for multi-line descriptions. Pass `--description -` to open an editor.
-- **Read an issue**: `glab issue view <number> --comments`. Use `-F json` for machine-readable output.
-- **List issues**: `glab issue list -F json` with appropriate `--label` filters.
-- **Comment on an issue**: `glab issue note <number> --message "..."`. GitLab calls comments "notes".
-- **Apply / remove labels**: `glab issue update <number> --label "..."` / `--unlabel "..."`. Multiple labels can be comma-separated or by repeating the flag.
-- **Close**: `glab issue close <number>`. `glab issue close` does not accept a closing comment, so post the explanation first with `glab issue note <number> --message "..."`, then close.
-- **Merge requests**: GitLab calls PRs "merge requests". Use `glab mr create`, `glab mr view`, `glab mr note`, etc. — the same shape as `gh pr ...` with `mr` in place of `pr` and `note`/`--message` in place of `comment`/`--body`.
+- **Criar uma issue**: `glab issue create --title "..." --description "..."`. Use um heredoc para descrições de múltiplas linhas. Passe `--description -` para abrir um editor.
+- **Ler uma issue**: `glab issue view <number> --comments`. Use `-F json` para saída legível por máquina.
+- **Listar issues**: `glab issue list -F json` com os filtros apropriados de `--label`.
+- **Comentar em uma issue**: `glab issue note <number> --message "..."`. O GitLab chama comentários de "notes".
+- **Aplicar / remover labels**: `glab issue update <number> --label "..."` / `--unlabel "..."`. Múltiplas labels podem ser separadas por vírgula ou repetindo a flag.
+- **Fechar**: `glab issue close <number>`. `glab issue close` não aceita um comentário de encerramento, então publique a explicação primeiro com `glab issue note <number> --message "..."` e depois feche.
+- **Merge requests**: O GitLab chama PRs de "merge requests". Use `glab mr create`, `glab mr view`, `glab mr note`, etc. — o mesmo formato de `gh pr ...` com `mr` no lugar de `pr` e `note`/`--message` no lugar de `comment`/`--body`.
 
-Infer the repo from `git remote -v` — `glab` does this automatically when run inside a clone.
+Infira o repositório a partir de `git remote -v` — o `glab` faz isso automaticamente quando executado dentro de um clone.
 
-## Merge requests as a triage surface
+## Merge requests como superfície de triagem
 
-**MRs as a request surface: no.** _(Set to `yes` if this repo treats external merge requests as feature requests; `/triage` reads this flag.)_
+**MRs como superfície de requisição: não.** _(Defina como `yes` se este repo tratar merge requests externos como solicitações de funcionalidades; `/triage` lê essa flag.)_
 
-When set to `yes`, MRs run through the same labels and states as issues, using the `glab mr` equivalents:
+Quando definido como `yes`, os MRs passam pelas mesmas labels e estados das issues, usando os equivalentes do `glab mr`:
 
-- **Read an MR**: `glab mr view <number> --comments` and `glab mr diff <number>` for the diff.
-- **List external MRs for triage**: `glab mr list -F json`, then keep only MRs whose author is not a project member/owner (a contributor's MR, not a maintainer's in-flight work).
-- **Comment / label / close**: `glab mr note`, `glab mr update --label`/`--unlabel`, `glab mr close`.
+- **Ler um MR**: `glab mr view <number> --comments` e `glab mr diff <number>` para o diff.
+- **Listar MRs externos para triagem**: `glab mr list -F json`, mantendo apenas MRs cujo autor não seja membro/proprietário do projeto (o MR de um contribuidor, não o trabalho em andamento de um mantenedor).
+- **Comentar / aplicar label / fechar**: `glab mr note`, `glab mr update --label`/`--unlabel`, `glab mr close`.
 
-Unlike GitHub, GitLab numbers issues and MRs separately, so `#42` is unambiguous once you know which surface the maintainer means.
+Diferente do GitHub, o GitLab numera issues e MRs separadamente, portanto `#42` é inequívoco uma vez que você saiba a qual superfície o mantenedor se refere.
 
-## When a skill says "publish to the issue tracker"
+## Quando uma skill disser "publique no issue tracker"
 
-Create a GitLab issue.
+Crie uma issue no GitLab.
 
-## When a skill says "fetch the relevant ticket"
+## Quando uma skill disser "busque o ticket relevante"
 
-Run `glab issue view <number> --comments`.
+Execute `glab issue view <number> --comments`.
 
-## Wayfinding operations
+## Operações de wayfinding
 
-Used by `/wayfinder`. The **map** is a single issue with **child** issues as tickets.
+Usado por `/wayfinder`. O **mapa** é uma única issue com issues **filhas** como tickets.
 
-- **Map**: a single issue labelled `wayfinder:map`, holding the Notes / Decisions-so-far / Fog body. `glab issue create --label wayfinder:map`. (On GitLab tiers with native epics, an epic may hold the map instead; a labelled issue works everywhere.)
-- **Child ticket**: an issue carrying `Part of #<map>` at the top of its description and labels `wayfinder:<type>` (`research`/`prototype`/`grilling`/`task`). Once claimed, the ticket is assigned to the driving dev.
-- **Blocking**: GitLab's **native blocking link** — the canonical, UI-visible representation. Add it with the `/blocked_by #<n>` quick action, posted as a note (`glab issue note <child> --message "/blocked_by #<blocker>"`). Native blocking links are a Premium/Ultimate feature; on the free tier (or where unavailable) fall back to a `Blocked by: #<n>, #<n>` line at the top of the description. A ticket is unblocked when every blocker is closed.
-- **Frontier query**: `glab issue list -F json` scoped to the map's children, drop any with an open blocker — a native `blocked_by` link to an open issue (`glab api projects/:id/issues/:iid/links`), or an open issue in the `Blocked by` line — or an assignee; first in map order wins.
-- **Claim**: `glab issue update <n> --assignee @me` — the session's first write.
-- **Resolve**: `glab issue note <n> --message "<answer>"`, then `glab issue close <n>`, then append a context pointer (gist + link) to the map's Decisions-so-far.
+- **Mapa**: uma única issue rotulada como `wayfinder:map`, contendo o corpo de Notas / Decisões até o momento / Névoa. `glab issue create --label wayfinder:map`. (Em camadas do GitLab com epics nativos, um epic pode conter o mapa em vez de uma issue; uma issue rotulada funciona em qualquer lugar.)
+- **Ticket filho**: uma issue contendo `Parte de #<map>` no topo de sua descrição e as labels `wayfinder:<type>` (`research`/`prototype`/`grilling`/`task`). Uma vez reivindicado, o ticket é atribuído ao dev responsável.
+- **Bloqueio**: **link nativo de bloqueio** do GitLab — a representação canônica e visível na UI. Adicione-o com a ação rápida `/blocked_by #<n>`, publicada como uma nota (`glab issue note <child> --message "/blocked_by #<blocker>"`). Links nativos de bloqueio são um recurso Premium/Ultimate; no plano gratuito (ou onde não estiverem disponíveis), recorra a uma linha `Bloqueado por: #<n>, #<n>` no topo da descrição. Um ticket é desbloqueado quando todos os bloqueadores estiverem fechados.
+- **Consulta de fronteira**: `glab issue list -F json` com escopo restrito às filhas do mapa, descarte qualquer uma com um bloqueador aberto — um link nativo `blocked_by` para uma issue aberta (`glab api projects/:id/issues/:iid/links`), ou uma issue aberta na linha `Bloqueado por` — ou um responsável (assignee); a primeira na ordem do mapa é escolhida.
+- **Reivindicar (claim)**: `glab issue update <n> --assignee @me` — a primeira escrita da sessão.
+- **Resolver**: `glab issue note <n> --message "<answer>"`, depois `glab issue close <n>`, e então anexe um ponteiro de contexto (resumo + link) às Decisões até o momento do mapa.
