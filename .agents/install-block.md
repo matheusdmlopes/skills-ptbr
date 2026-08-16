@@ -12,6 +12,8 @@ npx skills@latest add matheusdmlopes/skills-ptbr
 
 Pick the skills you want, and which coding agents to install them on. **The installer lets you choose which skills to take — make sure `setup-matt-pocock-skills` is one of them.**
 
+The installer offers every skill in this repository, and not all of them are translated. In pt-BR are the promoted skills listed in `.claude-plugin/plugin.json`, plus `claude-handoff` and `loop-me`. The rest of `in-progress/`, all of `misc/` and `deprecated/`, and the pages under `docs/` stay in the original English. To tell them apart while choosing, read each entry's description in the list — it is written in the language of that skill.
+
 </canonical-block>
 
 …and the single-skill form wherever one skill is named on its own:

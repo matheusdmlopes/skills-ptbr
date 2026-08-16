@@ -28,8 +28,6 @@ Se você quiser acompanhar mudanças nestas skills, e quaisquer novas que eu cri
 
 Esta tradução é instalada com o CLI [skills.sh](https://skills.sh/matheusdmlopes/skills-ptbr), que copia os arquivos de skill, editáveis, para o seu projeto.
 
-Apenas as skills traduzidas — as 25 skills promovidas do original mais `claude-handoff` e `loop-me` — estão em pt-BR. O restante deste repositório (skills em `misc/` e `deprecated/`, e a documentação em `docs/`) permanece em inglês, herdado sem alteração do repositório original.
-
 ### 1. Obtenha as skills
 
 ```bash
@@ -37,6 +35,8 @@ npx skills@latest add matheusdmlopes/skills-ptbr
 ```
 
 Escolha as skills que quiser, e em quais agentes de código instalá-las. **O instalador deixa você escolher quais skills levar — garanta que `setup-matt-pocock-skills` seja uma delas.**
+
+O instalador oferece todas as skills deste repositório, e nem todas estão traduzidas. Em pt-BR estão as skills promovidas listadas em `.claude-plugin/plugin.json`, mais `claude-handoff` e `loop-me`. As demais de `in-progress/`, todas as de `misc/` e `deprecated/`, e as páginas em `docs/` seguem no inglês original, herdadas sem alteração do repositório original. Para distinguir na hora de escolher, leia a `description` de cada item na lista — ela está escrita no idioma daquela skill.
 
 Isso grava as skills no seu repositório como arquivos comuns, que você possui e pode editar. Nada é atualizado nas suas costas; busque as atualizações quando quiser com `npx skills update`.
 
@@ -56,6 +56,17 @@ No seu agente, rode uma vez por repositório. Ele vai:
 - Perguntar onde você quer salvar quaisquer docs que criarmos
 
 ### 3. Pronto — você já pode começar.
+
+### Nota: Antigravity / Gemini CLI (`agy`)
+
+Se o passo 2 já deu "invalid command" pra você ao digitar `/setup-matt-pocock-skills` dentro do `agy`, não era bug desta tradução nem incompatibilidade permanente — era um bug do próprio `agy`, já corrigido. Versões antigas do CLI (1.0.1–1.0.8) tinham uma série de falhas documentadas no próprio changelog (`agy changelog`) em torno da descoberta e execução de comandos derivados de skill: skills que não recarregavam dinamicamente, sugestões do autocomplete que limpavam o campo sem executar o comando, descoberta de skill "fallback" que falhava quando o diretório de configuração padrão estava ausente. A partir da versão 1.0.8 essas falhas foram corrigidas, e a partir da 1.1.9 o mesmo mecanismo de expansão de slash-command passou a valer também no modo `-p`/print (`agy` atualiza sozinho, então é provável que você tenha simplesmente pego uma versão anterior a essa janela).
+
+Testamos ao vivo com `agy` 1.1.13: `/setup-matt-pocock-skills` aparece no autocomplete (puxando a `description` do `SKILL.md`) e executa a skill de ponta a ponta, corretamente. Se ainda dermos erro na sua versão, rode `agy update` primeiro.
+
+Dois detalhes que continuam valendo:
+
+- O Antigravity lê skills de um diretório global por usuário (`~/.agents/skills`), além de um local por repositório — por isso uma skill instalada aparece em qualquer projeto, não só no repositório onde foi instalada.
+- Desde a versão 1.1.12, o `agy` reconhece a flag `disable-slash-command: true` no frontmatter do `SKILL.md` — mas ela faz o oposto do que este repositório precisa: esconde a skill do menu `/`, mantendo-a invocável implicitamente pelo modelo. Não existe ainda, no Antigravity, um equivalente exato ao `disable-model-invocation` do Claude Code (que faz o oposto: bloqueia invocação implícita, mantém a explícita) — então skills marcadas aqui como *user-invoked* (como a própria `setup-matt-pocock-skills`) podem, em tese, também ser acionadas pelo modelo por conta própria no Antigravity, mesmo sem confirmação disso em teste.
 
 ## Por Que Essas Skills Existem
 

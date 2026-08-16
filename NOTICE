@@ -21,9 +21,10 @@ apenas a prosa foi traduzida.
 
 O que não foi traduzido
 ------------------------
-Skills em skills/misc/ e skills/deprecated/, a documentação em docs/, e a
-infraestrutura de plugin (.claude-plugin/) permanecem no inglês original,
-sem alteração.
+Skills em skills/misc/ e skills/deprecated/, as demais skills de
+skills/in-progress/ (todas exceto claude-handoff e loop-me), a documentação
+em docs/, e a infraestrutura de plugin (.claude-plugin/) permanecem no
+inglês original, sem alteração.
 
 Como o histórico foi mantido
 ------------------------------
